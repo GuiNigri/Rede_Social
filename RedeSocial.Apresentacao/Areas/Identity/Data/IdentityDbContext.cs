@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Apresentacao.Data
 {
-    public class IdentityDbContext : IdentityDbContext<IdentityUser>
+    public class IdentityDbContext : IdentityDbContext<UsuarioModel>
     {
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
             : base(options)

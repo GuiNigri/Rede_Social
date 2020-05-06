@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RedeSocial.Apresentacao.Data;
+using RedeSocial.Model.Entity;
 
 [assembly: HostingStartup(typeof(RedeSocial.Apresentacao.Areas.Identity.IdentityHostingStartup))]
 namespace RedeSocial.Apresentacao.Areas.Identity
@@ -19,8 +20,8 @@ namespace RedeSocial.Apresentacao.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("IdentityDbContextConnection")));
 
-                services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<IdentityDbContext>();
+                services.AddDefaultIdentity<UsuarioModel>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddEntityFrameworkStores<IdentityDbContext>().AddDefaultUI();
             });
         }
     }

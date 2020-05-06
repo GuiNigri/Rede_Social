@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -13,20 +14,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<UsuarioModel> _signInManager;
+        private readonly UserManager<UsuarioModel> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<UsuarioModel> userManager,
+            SignInManager<UsuarioModel> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -45,6 +47,21 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Nome")]
+            public string Nome { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Sobrenome")]
+            public string Sobrenome { get; set; }
+            [Required]
+            [Display(Name = "Cpf")]
+            public string Cpf { get; set; }
+            [Required]
+            [DataType(DataType.Date)]
+            [Display(Name = "Data de Nascimento")]
+            public string DataNascimento { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -74,7 +91,8 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new UsuarioModel { UserName = Input.Email, Email = Input.Email,
+                    Nome = Input.Nome, Sobrenome = Input.Sobrenome, Cpf = long.Parse(Input.Cpf), DataNascimento = DateTime.Parse(Input.DataNascimento)};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace RedeSocial.Apresentacao.Migrations
+namespace RedeSocial.Apresentacao.Areas.Identity.Data.Migrations
 {
     public partial class CreateDBLONG : Migration
     {

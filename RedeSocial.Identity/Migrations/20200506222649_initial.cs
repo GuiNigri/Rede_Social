@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace RedeSocial.Apresentacao.Areas.Identity.Data.Migrations
+namespace RedeSocial.Identity.Migrations
 {
-    public partial class CreateDBUsuarioPersonalizado : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,7 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Data.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Nome = table.Column<string>(nullable: true),
                     Sobrenome = table.Column<string>(nullable: true),
-                    Cpf = table.Column<int>(nullable: false),
+                    Cpf = table.Column<long>(nullable: false),
                     DataNascimento = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -96,8 +96,8 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
                 },
@@ -141,8 +141,8 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RedeSocial.Model.Entity;
 
-namespace RedeSocial.Apresentacao.Data
+namespace RedeSocial.Identity.Data
 {
     public class IdentityDbContext : IdentityDbContext<UsuarioModel>
     {
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
-            : base(options)
+            : base((DbContextOptions) options)
         {
         }
 

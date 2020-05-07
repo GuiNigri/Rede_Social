@@ -5,17 +5,17 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedeSocial.Apresentacao", "RedeSocial.Apresentacao\RedeSocial.Apresentacao.csproj", "{B460FFF3-CE93-4D3F-A648-DC845926266D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedeSocial.Aplicacao", "RedeSocial.Aplicacao\RedeSocial.Aplicacao.csproj", "{8E2DEB91-811D-4891-ACE5-EE7DB5E8E640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedeSocial.Aplicacao", "RedeSocial.Aplicacao\RedeSocial.Aplicacao.csproj", "{8E2DEB91-811D-4891-ACE5-EE7DB5E8E640}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Apresentaçao", "0 - Apresentaçao", "{5670F329-C451-4AF9-83D7-ABE3C2436631}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Aplicaçao", "1 - Aplicaçao", "{6B2CABB6-E2E7-445B-8141-6BFBB965F7EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedeSocial.Model", "RedeSocial.Model\RedeSocial.Model.csproj", "{CEA52ED9-F170-4D1E-BC9E-4E221288A598}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedeSocial.Model", "RedeSocial.Model\RedeSocial.Model.csproj", "{CEA52ED9-F170-4D1E-BC9E-4E221288A598}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedeSocial.Services", "RedeSocial.Services\RedeSocial.Services.csproj", "{97E33D50-05C7-4BEA-AA53-DE8D57EDB8B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedeSocial.Services", "RedeSocial.Services\RedeSocial.Services.csproj", "{97E33D50-05C7-4BEA-AA53-DE8D57EDB8B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedeSocial.Data", "RedeSocial.Data\RedeSocial.Data.csproj", "{B72206DE-FCCD-4D15-AB24-0FEEA1B8F1F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedeSocial.Data", "RedeSocial.Data\RedeSocial.Data.csproj", "{B72206DE-FCCD-4D15-AB24-0FEEA1B8F1F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Negocios", "2 - Negocios", "{2F77AC2E-7D8F-4CC5-8B99-C8E7FAFDEB6C}"
 EndProject
@@ -23,7 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Infraestrutura", "3 - I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - CrossCutting", "4 - CrossCutting", "{489E47E9-499E-452A-90A2-C679B27D886C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedeSocial.IoC", "RedeSocial.IoC\RedeSocial.IoC.csproj", "{03659B0A-DC19-421D-BB10-C3F234F14CD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedeSocial.IoC", "RedeSocial.IoC\RedeSocial.IoC.csproj", "{03659B0A-DC19-421D-BB10-C3F234F14CD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedeSocial.Identity", "RedeSocial.Identity\RedeSocial.Identity.csproj", "{F2A80CD8-E191-45B5-8237-702C2EAD647A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{03659B0A-DC19-421D-BB10-C3F234F14CD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03659B0A-DC19-421D-BB10-C3F234F14CD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03659B0A-DC19-421D-BB10-C3F234F14CD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2A80CD8-E191-45B5-8237-702C2EAD647A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2A80CD8-E191-45B5-8237-702C2EAD647A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2A80CD8-E191-45B5-8237-702C2EAD647A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2A80CD8-E191-45B5-8237-702C2EAD647A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{97E33D50-05C7-4BEA-AA53-DE8D57EDB8B0} = {2F77AC2E-7D8F-4CC5-8B99-C8E7FAFDEB6C}
 		{B72206DE-FCCD-4D15-AB24-0FEEA1B8F1F6} = {260A37A9-AE45-4702-BB4B-3C7E94A4E5CA}
 		{03659B0A-DC19-421D-BB10-C3F234F14CD4} = {489E47E9-499E-452A-90A2-C679B27D886C}
+		{F2A80CD8-E191-45B5-8237-702C2EAD647A} = {489E47E9-499E-452A-90A2-C679B27D886C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9076C9F7-8529-4F78-B297-5BFC246A019E}

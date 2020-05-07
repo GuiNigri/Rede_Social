@@ -1,8 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using RedeSocial.Model.Entity
 
-@inject SignInManager<UsuarioModel> SignInManager
-@inject UserManager<UsuarioModel> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))

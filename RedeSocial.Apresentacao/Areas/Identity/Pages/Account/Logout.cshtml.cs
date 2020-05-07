@@ -7,17 +7,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LogoutModel : PageModel
     {
-        private readonly SignInManager<UsuarioModel> _signInManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
 
-        public LogoutModel(SignInManager<UsuarioModel> signInManager, ILogger<LogoutModel> logger)
+        public LogoutModel(SignInManager<IdentityUser> signInManager, ILogger<LogoutModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;

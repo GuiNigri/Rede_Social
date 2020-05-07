@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RedeSocial.Identity.Data;
 
 namespace RedeSocial.Identity.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200507020038_UsuarioModelNomeDB")]
+    partial class UsuarioModelNomeDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,18 +233,21 @@ namespace RedeSocial.Identity.Migrations
                     b.Property<string>("FotoPerfil")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IdentityUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Nome")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PerfilId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PerfilId1")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Sobrenome")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdentityUserId");
+                    b.HasIndex("PerfilId1");
 
                     b.ToTable("UsuariosDB");
                 });
@@ -300,9 +305,9 @@ namespace RedeSocial.Identity.Migrations
 
             modelBuilder.Entity("RedeSocial.Model.Entity.UsuarioModel", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Perfil")
                         .WithMany()
-                        .HasForeignKey("IdentityUserId");
+                        .HasForeignKey("PerfilId1");
                 });
 #pragma warning restore 612, 618
         }

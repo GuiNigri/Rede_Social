@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RedeSocial.Identity.Data;
 
 namespace RedeSocial.Identity.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200507015226_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,38 +217,6 @@ namespace RedeSocial.Identity.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("RedeSocial.Model.Entity.UsuarioModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("Cpf")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DataNascimento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FotoPerfil")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdentityUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Nome")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sobrenome")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdentityUserId");
-
-                    b.ToTable("UsuariosDB");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -296,13 +266,6 @@ namespace RedeSocial.Identity.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("RedeSocial.Model.Entity.UsuarioModel", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
-                        .WithMany()
-                        .HasForeignKey("IdentityUserId");
                 });
 #pragma warning restore 612, 618
         }

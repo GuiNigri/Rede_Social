@@ -1,24 +1,24 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
 using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace RedeSocial.Model.Entity
 {
-    public class UsuarioModel:IdentityUser
+    public class UsuarioModel
     {
 
-        [PersonalData]
+        public int Id { get; set; }
+
         public string Nome { get; set; }
 
-        [PersonalData]
         public string Sobrenome { get; set; }
 
-        [PersonalData]
         public long Cpf { get; set; }
 
-        [PersonalData]
         public DateTime DataNascimento { get; set; }
+        public Uri FotoPerfil { get; set; }
+
+        public IdentityUser IdentityUser { get; set; }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RedeSocial.Identity.Data;
 
 namespace RedeSocial.Identity.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200507020325_fkAtualizar")]
+    partial class fkAtualizar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,7 +233,10 @@ namespace RedeSocial.Identity.Migrations
                     b.Property<string>("FotoPerfil")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IdentityUserId")
+                    b.Property<int>("IdentityUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdentityUserId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Nome")
@@ -242,7 +247,7 @@ namespace RedeSocial.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdentityUserId");
+                    b.HasIndex("IdentityUserId1");
 
                     b.ToTable("UsuariosDB");
                 });
@@ -302,7 +307,7 @@ namespace RedeSocial.Identity.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
-                        .HasForeignKey("IdentityUserId");
+                        .HasForeignKey("IdentityUserId1");
                 });
 #pragma warning restore 612, 618
         }

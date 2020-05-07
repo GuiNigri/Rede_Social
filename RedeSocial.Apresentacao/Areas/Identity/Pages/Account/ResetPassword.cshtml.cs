@@ -9,16 +9,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class ResetPasswordModel : PageModel
     {
-        private readonly UserManager<UsuarioModel> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ResetPasswordModel(UserManager<UsuarioModel> userManager)
+        public ResetPasswordModel(UserManager<IdentityUser> userManager)
         {
             _userManager = userManager;
         }

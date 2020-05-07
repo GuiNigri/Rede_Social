@@ -6,18 +6,17 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
 {
     public class ExternalLoginsModel : PageModel
     {
-        private readonly UserManager<UsuarioModel> _userManager;
-        private readonly SignInManager<UsuarioModel> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
         public ExternalLoginsModel(
-            UserManager<UsuarioModel> userManager,
-            SignInManager<UsuarioModel> signInManager)
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

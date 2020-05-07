@@ -1,5 +1,4 @@
-﻿@using RedeSocial.Model.Entity
-@inject SignInManager<UsuarioModel> SignInManager
+﻿@inject SignInManager<IdentityUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

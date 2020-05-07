@@ -23,20 +23,10 @@ namespace RedeSocial.Identity
                 services.AddDbContext<IdentityDbContext>(options => 
                     options.UseSqlServer(context.Configuration.GetConnectionString("IdentityDbContextConnection")));
 
-                //services.AddIdentity<IdentityUser, IdentityRole>()
-                //    .AddEntityFrameworkStores<IdentityDbContext>();
-
-               services.AddIdentity<IdentityUser, IdentityRole>()
-                   .AddEntityFrameworkStores<IdentityDbContext>()
-                   .AddDefaultTokenProviders()
-                   .AddDefaultUI();
-               
-               services.AddIdentityCore<UsuarioModel>()
-                   .AddRoles<IdentityRole>()
-                   .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<UsuarioModel, IdentityRole>>()
-                   .AddEntityFrameworkStores<IdentityDbContext>()
-                   .AddDefaultTokenProviders()
-                   .AddDefaultUI();
+                services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<IdentityDbContext>()
+                    .AddDefaultTokenProviders()
+                    .AddDefaultUI();
 
 
             });

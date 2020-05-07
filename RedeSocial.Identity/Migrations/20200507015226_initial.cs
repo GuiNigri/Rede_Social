@@ -39,11 +39,7 @@ namespace RedeSocial.Identity.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    Nome = table.Column<string>(nullable: true),
-                    Sobrenome = table.Column<string>(nullable: true),
-                    Cpf = table.Column<long>(nullable: false),
-                    DataNascimento = table.Column<DateTime>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

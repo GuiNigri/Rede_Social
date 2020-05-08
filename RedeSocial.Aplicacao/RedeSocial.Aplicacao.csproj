@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RedeSocial.Data\RedeSocial.Data.csproj" />
+    <ProjectReference Include="..\RedeSocial.Model\RedeSocial.Model.csproj" />
     <ProjectReference Include="..\RedeSocial.Services\RedeSocial.Services.csproj" />
   </ItemGroup>
 

@@ -12,7 +12,13 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RedeSocial.Apresentacao.Controllers;
+using RedeSocial.Data.Context;
+using RedeSocial.Identity.Migrations;
+using RedeSocial.Model.Entity;
+using UsuarioModel = RedeSocial.Model.Entity.UsuarioModel;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
 {
@@ -23,21 +29,22 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly UsuarioController _usuarioController;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, UsuarioController usuarioController)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _usuarioController = usuarioController;
         }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        [BindProperty] public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
 
@@ -51,7 +58,8 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+                MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -60,9 +68,20 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            public string Nome { get; set; }
+            public string Sobrenome { get; set; }
+            public long Cpf { get; set; }
+            public DateTime DataNascimento { get; set; }
+
+            [HiddenInputAttribute] 
+            public string IdentityUser { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        
+    
+
+    public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -87,6 +106,19 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
+
+                    var usuarioModel = new UsuarioModel
+                    {
+                        DataNascimento = Input.DataNascimento,
+                        Sobrenome = Input.Sobrenome,
+                        Cpf = Input.Cpf,
+                        Nome = Input.Nome,
+                        IdentityUser = user.Id,
+                        FotoPerfil = null
+                    };
+
+                    await _usuarioController.Create(usuarioModel);
+
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");

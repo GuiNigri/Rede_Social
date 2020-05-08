@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using RedeSocial.Apresentacao.Controllers;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
 {
@@ -13,15 +14,17 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly UsuarioController _usuarioController;
 
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger, UsuarioController usuarioController)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _usuarioController = usuarioController;
         }
 
         [BindProperty]
@@ -67,6 +70,9 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
             }
 
             var result = await _userManager.DeleteAsync(user);
+
+            await _usuarioController.DeleteConfirmed(user.Id);
+
             var userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
             {

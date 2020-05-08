@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RedeSocial.Identity;
+using Microsoft.EntityFrameworkCore;
+using RedeSocial.Apresentacao.Controllers;
+using RedeSocial.Data.Context;
 
 
 [assembly: HostingStartup(typeof(IdentityHostingStartup))]
@@ -21,10 +24,14 @@ namespace RedeSocial.Apresentacao
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddTransient<UsuarioController>();
+            services.AddHttpClient();
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
+
+            services.AddDbContext<RedeSocialContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("RedeSocialContext")));
 
 
         }
@@ -34,6 +41,7 @@ namespace RedeSocial.Apresentacao
         {
             if (env.IsDevelopment())
             {
+
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }

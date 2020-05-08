@@ -17,9 +17,9 @@ namespace RedeSocial.Identity
     {
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices((context, services) => 
+            builder.ConfigureServices((context, services) =>
             {
-
+                
                 services.AddDbContext<IdentityDbContext>(options => 
                     options.UseSqlServer(context.Configuration.GetConnectionString("IdentityDbContextConnection")));
 

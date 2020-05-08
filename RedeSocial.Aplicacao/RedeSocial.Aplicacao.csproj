@@ -13,9 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RedeSocial.Data\RedeSocial.Data.csproj" />
+    <ProjectReference Include="..\RedeSocial.IoC\RedeSocial.IoC.csproj" />
     <ProjectReference Include="..\RedeSocial.Model\RedeSocial.Model.csproj" />
-    <ProjectReference Include="..\RedeSocial.Services\RedeSocial.Services.csproj" />
   </ItemGroup>
 
 

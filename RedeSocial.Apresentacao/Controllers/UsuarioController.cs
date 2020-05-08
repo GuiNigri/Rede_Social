@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using RedeSocial.Apresentacao.Areas.Identity.Pages.Account;
-using RedeSocial.Data.Context;
 using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Apresentacao.Controllers
@@ -24,22 +23,12 @@ namespace RedeSocial.Apresentacao.Controllers
         {
         }
 
-        public async Task<IActionResult> Index()
-        {
-            return null;
-        }
-
         // GET: Usuario/Details/5
         public async Task<UsuarioModel> Details(string id)
         {
             return await GetFromApiAsync($"api/usuario/{id}");
         }
 
-        // GET: Usuario/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
 
         // POST: Usuario/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -51,12 +40,6 @@ namespace RedeSocial.Apresentacao.Controllers
             return await PostToApiAsync("api/usuario", usuarioModel);
         }
 
-        // GET: Usuario/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-
-            return null;
-        }
 
         // POST: Usuario/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -65,22 +48,32 @@ namespace RedeSocial.Apresentacao.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Nome,Sobrenome,Cpf,DataNascimento,FotoPerfil,IdentityUser")] UsuarioModel usuarioModel)
         {
-            return null;
+            return await PutToApiAsync($"api/usuario/{id}", usuarioModel);
         }
 
-        // GET: Usuario/Delete/5
-        public async Task<IActionResult> Delete(string identity)
-        {
-            return null;
-        }
 
         // POST: Usuario/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string identity)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            return null;
+            return await DeleteAsync($"api/usuario/{id}");
         }
+
+        // Tentar implementar para proximo TP
+        //
+       // [AllowAnonymous]
+       // [AcceptVerbs("GET")]
+       // public async Task<IActionResult> CheckCpf(long cpfInput)
+       // {
+       //
+       //     if (await GetFromApiCpfAsync($"api/usuario/{cpfInput}"))
+       //     {
+       //         return Json($"ISBN {cpfInput} já existe!");
+       //     }
+       //
+       //     return Json(true);
+       // }
 
     }
 }

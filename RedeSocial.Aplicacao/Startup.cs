@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RedeSocial.Data.Context;
+using RedeSocial.IoC;
 
 namespace RedeSocial.Aplicacao
 {
@@ -30,8 +30,7 @@ namespace RedeSocial.Aplicacao
         {
             services.AddControllers();
 
-            services.AddDbContext<RedeSocialContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("RedeSocialContext")));
+            services.RegisterInjections(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

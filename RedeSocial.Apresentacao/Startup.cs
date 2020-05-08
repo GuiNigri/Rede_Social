@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RedeSocial.Identity;
 using Microsoft.EntityFrameworkCore;
 using RedeSocial.Apresentacao.Controllers;
-using RedeSocial.Data.Context;
+using RedeSocial.IoC;
 
 
-[assembly: HostingStartup(typeof(IdentityHostingStartup))]
 namespace RedeSocial.Apresentacao
 {
     public class Startup
@@ -30,9 +28,8 @@ namespace RedeSocial.Apresentacao
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
 
-            services.AddDbContext<RedeSocialContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("RedeSocialContext")));
-
+            services.RegisterIdentity(Configuration);
+            //services.RegisterInjections(Configuration);
 
         }
 

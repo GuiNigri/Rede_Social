@@ -69,7 +69,7 @@ namespace RedeSocial.Apresentacao.Controllers
 
             var content = new StringContent(perfil, Encoding.UTF8, "application/json");
 
-            var response = httpClient.PostAsync(Uri, content).Result;
+            var response = httpClient.PutAsync(Uri, content).Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -80,5 +80,42 @@ namespace RedeSocial.Apresentacao.Controllers
                 return base.ValidationProblem();
             }
         }
+
+        public async Task<IActionResult> DeleteAsync(string Uri)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+
+            httpClient.BaseAddress = new Uri("https://localhost:44325/");
+
+            var response = httpClient.DeleteAsync(Uri).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                return base.Ok();
+            }
+            else
+            {
+                return base.ValidationProblem();
+            }
+        }
+
+        //public async Task<bool> GetFromApiCpfAsync(string Uri)
+        //{
+        //    var resposta = false;
+        //
+        //    var httpClient = _httpClientFactory.CreateClient();
+        //
+        //    httpClient.BaseAddress = new Uri("https://localhost:44325/");
+        //
+        //    var response = await httpClient.GetAsync(Uri);
+        //
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        resposta =  await response.Content.ReadAsAsync<bool>();
+        //    }
+        //
+        //    return resposta;
+        //}
+
     }
 }

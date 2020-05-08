@@ -15,8 +15,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RedeSocial.Apresentacao.Controllers;
-using RedeSocial.Data.Context;
-using RedeSocial.Identity.Migrations;
 using RedeSocial.Model.Entity;
 using UsuarioModel = RedeSocial.Model.Entity.UsuarioModel;
 
@@ -61,17 +59,34 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
                 MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Senha")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
+            [Display(Name = "Digite a senha novamente")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Nome")]
             public string Nome { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Sobrenome")]
             public string Sobrenome { get; set; }
+            [Required]
+            [Display(Name = "CPF")]
+            //[Remote(
+            //    action: "CheckCpf",
+            //    controller: "Usuario",
+            //    AdditionalFields = nameof(Cpf))]
             public long Cpf { get; set; }
+
+            [Required]
+            [DataType(DataType.Date)]
+            [Display(Name = "Data de Nascimento")]
             public DateTime DataNascimento { get; set; }
 
             [HiddenInputAttribute] 

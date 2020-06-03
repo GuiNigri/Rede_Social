@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using Microsoft.AspNetCore.Identity;
 
 
@@ -15,8 +16,15 @@ namespace RedeSocial.Model.Entity
         public long Cpf { get; set; }
 
         public DateTime DataNascimento { get; set; }
-        public Uri FotoPerfil { get; set; }
+        public string FotoPerfil { get; set; }
+
         [Key]
         public string IdentityUser { get; set; }
+    }
+
+    public class CreateAndUpdateHttpUsuarioModel
+    {
+        public UsuarioModel UsuarioModel { get; set; }
+        public string ImageBase64 { get; set; }
     }
 }

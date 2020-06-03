@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - CrossCutting", "4 - Cro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedeSocial.IoC", "RedeSocial.IoC\RedeSocial.IoC.csproj", "{03659B0A-DC19-421D-BB10-C3F234F14CD4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedeSocial.Infraestrutura.Blob", "RedeSocial.Infraestrutura.Blob\RedeSocial.Infraestrutura.Blob.csproj", "{EABFDD78-8862-48DE-93C4-A1A7B6E48D55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{03659B0A-DC19-421D-BB10-C3F234F14CD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03659B0A-DC19-421D-BB10-C3F234F14CD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03659B0A-DC19-421D-BB10-C3F234F14CD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EABFDD78-8862-48DE-93C4-A1A7B6E48D55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EABFDD78-8862-48DE-93C4-A1A7B6E48D55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EABFDD78-8862-48DE-93C4-A1A7B6E48D55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EABFDD78-8862-48DE-93C4-A1A7B6E48D55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{97E33D50-05C7-4BEA-AA53-DE8D57EDB8B0} = {2F77AC2E-7D8F-4CC5-8B99-C8E7FAFDEB6C}
 		{B72206DE-FCCD-4D15-AB24-0FEEA1B8F1F6} = {260A37A9-AE45-4702-BB4B-3C7E94A4E5CA}
 		{03659B0A-DC19-421D-BB10-C3F234F14CD4} = {489E47E9-499E-452A-90A2-C679B27D886C}
+		{EABFDD78-8862-48DE-93C4-A1A7B6E48D55} = {260A37A9-AE45-4702-BB4B-3C7E94A4E5CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9076C9F7-8529-4F78-B297-5BFC246A019E}

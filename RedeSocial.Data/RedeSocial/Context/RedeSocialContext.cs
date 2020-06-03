@@ -9,6 +9,6 @@ namespace RedeSocial.Data.RedeSocial.Context
         {
         }
 
-        public DbSet<global::RedeSocial.Model.Entity.UsuarioModel> UsuarioModel { get; set; }
+        public DbSet<Model.Entity.UsuarioModel> UsuarioModel { get; set; }
     }
 }

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RedeSocial.Apresentacao.Controllers;
+using RedeSocial.Apresentacao.Models;
 using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
@@ -15,7 +17,6 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UsuarioController _usuarioController;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
@@ -24,7 +25,6 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _usuarioController = usuarioController;
         }
 
         [Display(Name = "Email")]
@@ -41,39 +41,17 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
-
-            public string Nome { get; set; }
-            public string Sobrenome { get; set; }
-
-            [Display(Name = "CPF")]
-            public long Cpf { get; set; }
-
-            [Display(Name = "Data de Nascimento")]
-            [DataType(DataType.Date)]
-            public DateTime DataNascimento { get; set; }
         }
 
 
-        private async Task LoadAsync(IdentityUser user, UsuarioModel usuarioModel)
+        private async Task LoadAsync(IdentityUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            var cpf = usuarioModel.Cpf;
-            var nome = usuarioModel.Nome;
-            var sobrenome = usuarioModel.Sobrenome;
-            var dataNascimento = usuarioModel.DataNascimento;
 
             Username = userName;
 
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber,
-                Cpf = cpf,
-                Nome = nome,
-                Sobrenome = sobrenome,
-                DataNascimento = dataNascimento
-                
-            };
+
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -84,9 +62,7 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userModel = await _usuarioController.Details(user.Id);
-
-            await LoadAsync(user, userModel);
+            await LoadAsync(user);
             return Page();
         }
 
@@ -100,25 +76,13 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userModel = await _usuarioController.Details(user.Id);
-
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user, userModel);
+                await LoadAsync(user);
                 return Page();
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            userModel.Cpf = Input.Cpf;
-            userModel.Nome = Input.Nome;
-            userModel.Sobrenome = Input.Sobrenome;
-            userModel.DataNascimento = Input.DataNascimento;
-            userModel.FotoPerfil = null;
-
-
-
-            await _usuarioController.Edit(user.Id, userModel);
 
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -139,3 +103,4 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
         }
     }
 }
+

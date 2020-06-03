@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +16,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using RedeSocial.Apresentacao.Controllers;
+using RedeSocial.Apresentacao.Models;
 using RedeSocial.Model.Entity;
 using UsuarioModel = RedeSocial.Model.Entity.UsuarioModel;
 
@@ -27,19 +31,17 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly UsuarioController _usuarioController;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender, UsuarioController usuarioController)
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _usuarioController = usuarioController;
         }
 
         [BindProperty] public InputModel Input { get; set; }
@@ -47,6 +49,7 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
 
         public class InputModel
         {
@@ -66,31 +69,6 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
             [Display(Name = "Digite a senha novamente")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Nome")]
-            public string Nome { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Sobrenome")]
-            public string Sobrenome { get; set; }
-            [Required]
-            [Display(Name = "CPF")]
-            //[Remote(
-            //    action: "CheckCpf",
-            //    controller: "Usuario",
-            //    AdditionalFields = nameof(Cpf))]
-            public long Cpf { get; set; }
-
-            [Required]
-            [DataType(DataType.Date)]
-            [Display(Name = "Data de Nascimento")]
-            public DateTime DataNascimento { get; set; }
-
-            [HiddenInputAttribute] 
-            public string IdentityUser { get; set; }
         }
 
         
@@ -104,6 +82,7 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -122,30 +101,20 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    var usuarioModel = new UsuarioModel
-                    {
-                        DataNascimento = Input.DataNascimento,
-                        Sobrenome = Input.Sobrenome,
-                        Cpf = Input.Cpf,
-                        Nome = Input.Nome,
-                        IdentityUser = user.Id,
-                        FotoPerfil = null
-                    };
-
-                    await _usuarioController.Create(usuarioModel);
-
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+                        //return RedirectToPage("Index", new { email = Input.Email });
+                        return RedirectToRoute("Default", new { controller = "Usuario", action = "Create" });
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToRoute("Default", new { controller = "Usuario", action = "Create", IdentityUser = user.Id });
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
+                        //return LocalRedirect(returnUrl);
                     }
                 }
                 foreach (var error in result.Errors)

@@ -29,8 +29,9 @@ namespace RedeSocial.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(UsuarioModel usuarioModel)
+        public async Task DeleteAsync(string id)
         {
+            var usuarioModel = await _context.UsuarioModel.FindAsync(id);
             _context.UsuarioModel.Remove(usuarioModel);
             await _context.SaveChangesAsync();
         }

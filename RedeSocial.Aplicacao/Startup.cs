@@ -30,7 +30,8 @@ namespace RedeSocial.Aplicacao
         {
             services.AddControllers();
 
-            services.RegisterInjections(Configuration);
+            services.RegisterInjectionsForWebApi(Configuration);
+            services.RegisterIdentityForWebApi(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +45,8 @@ namespace RedeSocial.Aplicacao
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

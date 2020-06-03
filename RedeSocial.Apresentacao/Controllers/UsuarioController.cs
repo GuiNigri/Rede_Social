@@ -1,79 +1,201 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using RedeSocial.Apresentacao.Areas.Identity.Pages.Account;
+using RedeSocial.Apresentacao.Models;
 using RedeSocial.Model.Entity;
+using RedeSocial.Model.Exceptions;
+using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Apresentacao.Controllers
 {
     [Authorize]
-    public class UsuarioController : BaseController
+    public class UsuarioController : Controller
     {
+        private readonly IUsuarioServices _usuarioServices;
 
-        public UsuarioController(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+        public UsuarioController(IUsuarioServices usuarioServices)
         {
+            _usuarioServices = usuarioServices;
+        }
+        // GET: Veiculo
+        public async Task<List<UsuarioViewModel>> GetAllAsync()
+        {
+            var listaUsuarios = await _usuarioServices.GetAllAsync();
+
+            var listaViewModelUsuario = listaUsuarios.Select(ConvertModelToViewModel).ToList();
+
+            return listaViewModelUsuario;
+
         }
 
-        // GET: Usuario/Details/5
-        public async Task<UsuarioModel> Details(string id)
+        public async Task<UsuarioViewModel> GetByIdAsync(string id)
         {
-            return await GetFromApiAsync($"api/usuario/{id}");
+            if (id == null)
+            {
+                return null;
+            }
+
+            var usuarioModel = await _usuarioServices.GetByIdAsync(id);
+
+            if (usuarioModel == null)
+            {
+                return null;
+            }
+
+            var usuarioViewModel = ConvertModelToViewModel(usuarioModel);
+
+            return usuarioViewModel;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Create([Bind("IdentityUser")] string identityUser)
+        {
+            var usuarioViewModel = new UsuarioViewModel
+            {
+                IdentityUser = identityUser
+            };
 
-        // POST: Usuario/Create
+            return View("Index", usuarioViewModel);
+        }
+
+        // POST: Veiculo/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<bool> Create([Bind("Nome ,Sobrenome,Cpf,DataNascimento,IdentityUser")] UsuarioViewModel usuarioViewModel, IFormFile ImageFile)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string imageBase64;
+                    using (var ms = new MemoryStream())
+                    {
+                        ImageFile.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        imageBase64 = Convert.ToBase64String(fileBytes);
+                    }
+
+                    var usuarioModel = ConvertViewModelToModel(usuarioViewModel);
+                    await _usuarioServices.CreateAsync(usuarioModel, imageBase64);
+                    return true;
+
+                }
+                catch (ModelValidationExceptions e)
+                {
+                    ModelState.AddModelError(e.PropertyName, e.Message);
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        // POST: Veiculo/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Sobrenome,Cpf,DataNascimento,FotoPerfil,IdentityUser")] UsuarioModel usuarioModel)
+        public async Task<bool> Edit(string id, [Bind("Id,Modelo,Cor,Ano,MarcaModelId,ImagemUri")] UsuarioViewModel usuarioViewModel, string newImage)
         {
-            return await PostToApiAsync("api/usuario", usuarioModel);
+            if (id != usuarioViewModel.IdentityUser)
+            {
+                return false;
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var usuarioModel = ConvertViewModelToModel(usuarioViewModel);
+                    await _usuarioServices.UpdateAsync(usuarioModel);
+                    return true;
+                }
+                catch (ModelValidationExceptions e)
+                {
+                    ModelState.AddModelError(e.PropertyName, e.Message);
+
+                    return false;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (await _usuarioServices.GetByIdAsync(id) == null)
+                    {
+                        return false;
+                    }
+                    
+                }
+                catch (System.Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+
+            return false;
         }
 
-
-        // POST: Usuario/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Nome,Sobrenome,Cpf,DataNascimento,FotoPerfil,IdentityUser")] UsuarioModel usuarioModel)
-        {
-            return await PutToApiAsync($"api/usuario/{id}", usuarioModel);
-        }
-
-
-        // POST: Usuario/Delete/5
+        // POST: Veiculo/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<bool> DeleteConfirmed(string id)
         {
-            return await DeleteAsync($"api/usuario/{id}");
+            try
+            {
+                await _usuarioServices.DeleteAsync(id);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                
+            }
         }
 
-        // Tentar implementar para proximo TP
-        //
-       // [AllowAnonymous]
-       // [AcceptVerbs("GET")]
-       // public async Task<IActionResult> CheckCpf(long cpfInput)
-       // {
-       //
-       //     if (await GetFromApiCpfAsync($"api/usuario/{cpfInput}"))
-       //     {
-       //         return Json($"ISBN {cpfInput} já existe!");
-       //     }
-       //
-       //     return Json(true);
-       // }
+        private static UsuarioViewModel ConvertModelToViewModel(UsuarioModel usuarioModel)
+        {
+            var usuarioViewModel = new UsuarioViewModel
+            {
+                IdentityUser = usuarioModel.IdentityUser,
+                Cpf = usuarioModel.Cpf,
+                DataNascimento = usuarioModel.DataNascimento,
+                Nome = usuarioModel.Nome,
+                Sobrenome = usuarioModel.Sobrenome
+          
+            };
+
+            return usuarioViewModel;
+        }
+
+        private static UsuarioModel ConvertViewModelToModel(UsuarioViewModel usuarioViewModel)
+        {
+            var usuarioModel = new UsuarioModel
+            {
+                FotoPerfil = null,
+                IdentityUser = usuarioViewModel.IdentityUser,
+                Cpf = usuarioViewModel.Cpf,
+                DataNascimento = usuarioViewModel.DataNascimento,
+                Nome = usuarioViewModel.Nome,
+                Sobrenome = usuarioViewModel.Sobrenome
+          
+            };
+
+            return usuarioModel;
+        }
 
     }
 }

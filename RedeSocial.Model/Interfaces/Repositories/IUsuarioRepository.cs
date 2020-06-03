@@ -10,10 +10,8 @@ namespace RedeSocial.Model.Interfaces.Repositories
     {
         Task CreateAsync(UsuarioModel usuarioModel);
         Task UpdateAsync(UsuarioModel usuarioModel);
-        Task DeleteAsync(UsuarioModel usuarioModel);
+        Task DeleteAsync(string id);
         Task<IEnumerable<UsuarioModel>> GetAllAsync();
-        Task<UsuarioModel> GetByIdAsync(string Id);
-        bool UsuarioModelExists(string id);
-        Task<bool> GetByCpfAsync(long CPF);
+        Task<UsuarioModel> GetByIdAsync(string id);
     }
 }

@@ -10,5 +10,8 @@ namespace RedeSocial.Data.RedeSocial.Context
         }
 
         public DbSet<Model.Entity.UsuarioModel> UsuarioModel { get; set; }
+        public DbSet<Model.Entity.PostModel> PostModel { get; set; }
+        public DbSet<Model.Entity.CommentPostModel> CommentPostModel { get; set; }
+        public DbSet<Model.Entity.LikesPostModel> LikesPostModel { get; set; }
     }
 }

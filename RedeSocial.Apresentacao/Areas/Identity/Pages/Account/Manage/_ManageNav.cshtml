@@ -1,15 +1,8 @@
 ﻿@inject SignInManager<IdentityUser> SignInManager
-@{
-    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
-}
+
     <ul class="list-group list-group-flush">
-        <li class="@ManageNavPages.IndexNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a asp-page="./Index">Profile</a></li>
-        <li class="@ManageNavPages.EmailNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a id="email" asp-page="./Email">Email</a></li>
-        <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a id="change-password" asp-page="./ChangePassword">Password</a></li>
-        @if (hasExternalLogins)
-        {
-            <li class="@ManageNavPages.ExternalLoginsNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a id="external-login" asp-page="./ExternalLogins">External logins</a></li>
-        }
-        <li class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-        <li class="@ManageNavPages.PersonalDataNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a asp-page="./PersonalData">Personal data</a></li>
+        <li class="@ManageNavPages.IndexNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a id="perfil" asp-page="./Index">Perfil</a></li>
+        <li class="@ManageNavPages.EmailNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a id="email" asp-page="./Email">Alterar Email</a></li>
+        <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a id="change-password" asp-page="./ChangePassword">Alterar Senha</a></li>
+        <li class="@ManageNavPages.PersonalDataNavClass(ViewContext) text-uppercase list-group-item" style="background-color: white; border-color: black;"><a asp-page="./PersonalData">Excluir conta</a></li>
     </ul>

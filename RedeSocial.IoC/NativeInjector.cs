@@ -19,6 +19,7 @@ namespace RedeSocial.IoC
             IConfiguration configuration)
         {
             services.AddScoped<IUsuarioServices, UsuarioServices>();
+            services.AddScoped<IPostServices, PostServices>();
 
             AddDbContextAndData(services,configuration);
             
@@ -33,6 +34,7 @@ namespace RedeSocial.IoC
                 new BlobServices(configuration.GetConnectionString("StorageAccount")));
 
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
 
 
         }

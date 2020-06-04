@@ -20,6 +20,7 @@ namespace RedeSocial.Apresentacao.Extensions
             services.AddHttpClient(projetoHttpOptions.Name, x => { x.BaseAddress = projetoHttpOptions.ApiBaseUrl; });
 
             services.AddTransient<IUsuarioServices, UsuarioHttpServices>();
+            services.AddTransient<IPostServices, PostHttpServices>();
         }
 
     }

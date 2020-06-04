@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RedeSocial.Data.RedeSocial.Context;
 
 namespace RedeSocial.Data.RedeSocial.Migrations
 {
     [DbContext(typeof(RedeSocialContext))]
-    partial class RedeSocialContextModelSnapshot : ModelSnapshot
+    [Migration("20200603200424_createPostCommentAndLike")]
+    partial class createPostCommentAndLike
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,9 +73,6 @@ namespace RedeSocial.Data.RedeSocial.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DataPostagem")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("IdentityUser")
                         .HasColumnType("nvarchar(max)");

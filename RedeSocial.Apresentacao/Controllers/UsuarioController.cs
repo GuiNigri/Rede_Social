@@ -23,10 +23,12 @@ namespace RedeSocial.Apresentacao.Controllers
     public class UsuarioController : Controller
     {
         private readonly IUsuarioServices _usuarioServices;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UsuarioController(IUsuarioServices usuarioServices)
+        public UsuarioController(IUsuarioServices usuarioServices,UserManager<IdentityUser> userManager)
         {
             _usuarioServices = usuarioServices;
+            _userManager = userManager;
         }
         // GET: Veiculo
         public async Task<List<UsuarioViewModel>> GetAllAsync()
@@ -60,14 +62,11 @@ namespace RedeSocial.Apresentacao.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Create([Bind("IdentityUser")] string identityUser)
+        public async Task<IActionResult> Create()
         {
-            var usuarioViewModel = new UsuarioViewModel
-            {
-                IdentityUser = identityUser
-            };
 
-            return View("Index", usuarioViewModel);
+
+            return View("Index");
         }
 
         // POST: Veiculo/Create
@@ -76,33 +75,48 @@ namespace RedeSocial.Apresentacao.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<bool> Create([Bind("Nome ,Sobrenome,Cpf,DataNascimento,IdentityUser")] UsuarioViewModel usuarioViewModel, IFormFile ImageFile)
+        public async Task<IActionResult> Create([Bind("Nome,Sobrenome,Cpf,DataNascimento,Email,Password,ConfirmPassword,IdentityUser")] UsuarioViewModel usuarioViewModel, IFormFile ImageFile)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    string imageBase64;
-                    using (var ms = new MemoryStream())
-                    {
-                        ImageFile.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        imageBase64 = Convert.ToBase64String(fileBytes);
-                    }
 
-                    var usuarioModel = ConvertViewModelToModel(usuarioViewModel);
-                    await _usuarioServices.CreateAsync(usuarioModel, imageBase64);
-                    return true;
+                    var user = new IdentityUser { UserName = usuarioViewModel.Email, Email = usuarioViewModel.Email }; 
+                    var result = await _userManager.CreateAsync(user, usuarioViewModel.Password);
+
+                    if (result.Succeeded)
+                    { 
+                        usuarioViewModel.IdentityUser = user.Id;
+                        var usuarioModel = ConvertViewModelToModel(usuarioViewModel);
+                        await _usuarioServices.CreateAsync(usuarioModel, ConvertIFormFileToBase64(ImageFile));
+                        return RedirectToAction("Index","Home");
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    
 
                 }
                 catch (ModelValidationExceptions e)
                 {
                     ModelState.AddModelError(e.PropertyName, e.Message);
-                    return false;
                 }
             }
 
-            return false;
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var usuarioModel = await _usuarioServices.GetByIdAsync(id);
+
+            var usuarioEditViewModel = ConvertModelToEditViewModel(usuarioModel);
+
+            return View(usuarioEditViewModel);
+
         }
 
         // POST: Veiculo/Edit/5
@@ -110,11 +124,11 @@ namespace RedeSocial.Apresentacao.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<bool> Edit(string id, [Bind("Id,Modelo,Cor,Ano,MarcaModelId,ImagemUri")] UsuarioViewModel usuarioViewModel, string newImage)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Modelo,Cor,Ano,MarcaModelId,ImagemUri")] UsuarioViewModel usuarioViewModel, string newImage)
         {
             if (id != usuarioViewModel.IdentityUser)
             {
-                return false;
+                return NotFound();
             }
 
             if (ModelState.IsValid)
@@ -123,19 +137,19 @@ namespace RedeSocial.Apresentacao.Controllers
                 {
                     var usuarioModel = ConvertViewModelToModel(usuarioViewModel);
                     await _usuarioServices.UpdateAsync(usuarioModel);
-                    return true;
+
+                    return RedirectToAction("Index","Home");
                 }
                 catch (ModelValidationExceptions e)
                 {
                     ModelState.AddModelError(e.PropertyName, e.Message);
 
-                    return false;
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (await _usuarioServices.GetByIdAsync(id) == null)
                     {
-                        return false;
+                        return NotFound();
                     }
                     
                 }
@@ -146,7 +160,7 @@ namespace RedeSocial.Apresentacao.Controllers
             }
 
 
-            return false;
+            return View();
         }
 
         // POST: Veiculo/Delete/5
@@ -174,11 +188,28 @@ namespace RedeSocial.Apresentacao.Controllers
                 Cpf = usuarioModel.Cpf,
                 DataNascimento = usuarioModel.DataNascimento,
                 Nome = usuarioModel.Nome,
-                Sobrenome = usuarioModel.Sobrenome
+                Sobrenome = usuarioModel.Sobrenome,
+                FotoPerfil = usuarioModel.FotoPerfil
           
             };
 
             return usuarioViewModel;
+        }
+
+        private static UsuarioEditViewModel ConvertModelToEditViewModel(UsuarioModel usuarioModel)
+        {
+            var usuarioEditViewModel = new UsuarioEditViewModel
+            {
+                IdentityUser = usuarioModel.IdentityUser,
+                Cpf = usuarioModel.Cpf,
+                DataNascimento = usuarioModel.DataNascimento,
+                Nome = usuarioModel.Nome,
+                Sobrenome = usuarioModel.Sobrenome,
+                FotoPerfil = usuarioModel.FotoPerfil
+          
+            };
+
+            return usuarioEditViewModel;
         }
 
         private static UsuarioModel ConvertViewModelToModel(UsuarioViewModel usuarioViewModel)
@@ -195,6 +226,19 @@ namespace RedeSocial.Apresentacao.Controllers
             };
 
             return usuarioModel;
+        }
+
+        private static string ConvertIFormFileToBase64(IFormFile image)
+        {
+            string imageBase64;
+            using (var ms = new MemoryStream())
+            {
+                image.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                imageBase64 = Convert.ToBase64String(fileBytes);
+            }
+
+            return imageBase64;
         }
 
     }

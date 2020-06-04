@@ -74,8 +74,9 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
         
     
 
-    public async Task OnGetAsync(string returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            return RedirectToRoute("Default", new { controller = "Usuario", action = "Create"});
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -89,12 +90,14 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
             {
                 var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
@@ -108,11 +111,11 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         //return RedirectToPage("Index", new { email = Input.Email });
-                        return RedirectToRoute("Default", new { controller = "Usuario", action = "Create" });
+                        return RedirectToRoute("Index", new { controller = "Usuario", action = "Create", Senha = Input.Password });
                     }
                     else
                     {
-                        return RedirectToRoute("Default", new { controller = "Usuario", action = "Create", IdentityUser = user.Id });
+                        return RedirectToRoute("Index", new { controller = "Usuario", action = "Create", IdentityUser = user.Id });
                         //await _signInManager.SignInAsync(user, isPersistent: false);
                         //return LocalRedirect(returnUrl);
                     }

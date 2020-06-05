@@ -26,8 +26,10 @@ namespace RedeSocial.Infraestrutura.Blob
         {
             var stream = new MemoryStream(Convert.FromBase64String(imageBase64));
             var containerClient = _blobClient.GetBlobContainerClient(ContainerAzure);
-       
-            if (_containerClient.ExistsAsync() == null)
+
+            var response = await containerClient.ExistsAsync();
+
+            if (response.GetRawResponse() == null)
             {
                 await _containerClient.CreateIfNotExistsAsync();
                 await _containerClient.SetAccessPolicyAsync(global::Azure.Storage.Blobs.Models.PublicAccessType.BlobContainer);

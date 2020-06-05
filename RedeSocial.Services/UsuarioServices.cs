@@ -38,8 +38,11 @@ namespace RedeSocial.Services
         {
             if(base64 != null)
             {
-                await _blobServices.DeleteBlobAsync(usuarioModel.FotoPerfil);
-
+                if(usuarioModel.FotoPerfil != null)
+                {
+                    await _blobServices.DeleteBlobAsync(usuarioModel.FotoPerfil);
+                }
+                
                 var blob = await _blobServices.CreateBlobAsync(base64);
 
                 usuarioModel.FotoPerfil = blob;

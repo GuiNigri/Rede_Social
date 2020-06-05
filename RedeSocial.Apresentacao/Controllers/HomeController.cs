@@ -80,7 +80,8 @@ namespace RedeSocial.Apresentacao.Controllers
                 UriImage = postModel.UriImage,
                 TempoDaPostagem = tempo,
                 FormatacaoTempo = formatoDeTempo,
-                IdentityUser = postModel.IdentityUser
+                IdentityUser = postModel.IdentityUser,
+                FotoPerfil = usuario.FotoPerfil
             };
 
             return postViewModel;

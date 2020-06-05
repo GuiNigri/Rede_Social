@@ -1,8 +1,6 @@
 ﻿@model HomeViewModel
 @using RedeSocial.Apresentacao.Controllers;
 
-@inject PostController PostController
-
 <div class="container-fluid gedf-wrapper">
     <div class="row">
         <div class="col-md-3">
@@ -78,7 +76,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="mr-2">
-                                    <img class="rounded-circle" width="45" src="@Model.FotoPerfil" alt="">
+                                    <img class="rounded-circle" width="45" src="@post.FotoPerfil" alt="">
                                 </div>
                                 <div class="ml-2">
                                     <div class="h5 m-0"></div>

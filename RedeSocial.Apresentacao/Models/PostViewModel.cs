@@ -15,5 +15,6 @@ namespace RedeSocial.Apresentacao.Models
         public int TempoDaPostagem { get; set; }
         public string FormatacaoTempo { get; set; }
         public string IdentityUser { get; set; }
+        public string FotoPerfil { get; set; }
     }
 }

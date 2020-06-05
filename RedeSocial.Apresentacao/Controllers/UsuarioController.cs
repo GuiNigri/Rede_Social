@@ -70,7 +70,7 @@ namespace RedeSocial.Apresentacao.Controllers
                 }
             }
 
-            return View();
+            return View("Index");
         }
 
         [HttpGet]

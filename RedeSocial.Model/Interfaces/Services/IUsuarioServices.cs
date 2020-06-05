@@ -7,8 +7,8 @@ namespace RedeSocial.Model.Interfaces.Services
 {
     public interface IUsuarioServices
     {
-        Task CreateAsync(UsuarioModel usuarioModel, string stream);
-        Task UpdateAsync(UsuarioModel usuarioModel);
+        Task CreateAsync(UsuarioModel usuarioModel, string base64);
+        Task UpdateAsync(UsuarioModel usuarioModel, string base64);
         Task DeleteAsync(string id);
         Task<IEnumerable<UsuarioModel>> GetAllAsync();
         Task<UsuarioModel> GetByIdAsync(string id);

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
 {
@@ -13,15 +14,17 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly IUsuarioServices _usuarioServices;
 
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger, IUsuarioServices usuarioServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _usuarioServices = usuarioServices;
         }
 
         [BindProperty]
@@ -72,6 +75,7 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
             }
+            await _usuarioServices.DeleteAsync(user.Id);
 
             await _signInManager.SignOutAsync();
 

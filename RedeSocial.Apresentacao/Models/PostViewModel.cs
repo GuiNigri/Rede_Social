@@ -14,5 +14,6 @@ namespace RedeSocial.Apresentacao.Models
         public int Privacidade { get; set; }
         public int TempoDaPostagem { get; set; }
         public string FormatacaoTempo { get; set; }
+        public string IdentityUser { get; set; }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,12 +24,12 @@ namespace RedeSocial.Apresentacao.HttpServices
             _httpClient = httpClientFactory.CreateClient(projetoHttpOptions.CurrentValue.Name);
             _httpClient.Timeout = TimeSpan.FromMinutes(_projetoHttpOptions.CurrentValue.Timeout);
         }
-        public async Task CreateAsync(UsuarioModel usuarioModel, string imageBase64)
+        public async Task CreateAsync(UsuarioModel usuarioModel, string base64)
         {
             var createModel = new CreateAndUpdateHttpUsuarioModel
             {
                 UsuarioModel = usuarioModel,
-                ImageBase64 = imageBase64
+                ImageBase64 = base64
             };
 
             var path  = $"{_projetoHttpOptions.CurrentValue.UsuarioPath}";
@@ -46,12 +44,12 @@ namespace RedeSocial.Apresentacao.HttpServices
             }
         }
 
-        public async Task UpdateAsync(UsuarioModel usuarioModel)
+        public async Task UpdateAsync(UsuarioModel usuarioModel, string base64)
         {
             var updateModel = new CreateAndUpdateHttpUsuarioModel
             {
                 UsuarioModel = usuarioModel,
-                ImageBase64 = null
+                ImageBase64 = base64
             };
 
             var pathWithId  = $"{_projetoHttpOptions.CurrentValue.UsuarioPath}/{usuarioModel.IdentityUser}";

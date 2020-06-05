@@ -20,9 +20,11 @@ namespace RedeSocial.Aplicacao.Controllers
         {
             _postServices = postServices;
         }
-                // POST: api/Usuario
+
+        // POST: api/Usuario
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+
         [HttpPost]
         public async Task<ActionResult<PostModel>> PostUsuarioModel([Bind("Id, IdentityUser,Texto,UriImage,Privacidade")] PostModel postModel)
         {
@@ -46,9 +48,60 @@ namespace RedeSocial.Aplicacao.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<PostModel>> GetPostModel()
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetPostModel()
         {
-            return await _postServices.GetAll();
+            var posts = await _postServices.GetAllAsync();
+            return posts.ToList();
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetPostModel(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var posts = await _postServices.GetPostsByUserAsync(id);
+
+            return posts.ToList();
+        }
+
+        [HttpGet("ById/{id}")]
+        public async Task<ActionResult<PostModel>> GetPostModel(int id)
+        {
+            if (id <=0)
+            {
+                return NotFound();
+            }
+            var post = await _postServices.GetByidAsync(id);
+
+            if(post == null)
+            {
+                return NotFound();
+            }
+
+            return post;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<PostModel>> DeletePostModel(int id)
+        {
+            if (id <= 0)
+            {
+                return NotFound();
+            }
+
+            var post = await _postServices.GetByidAsync(id);
+
+            if(post == null)
+            {
+                return NotFound();
+            }
+
+            await _postServices.DeleteAsync(id,post.UriImage);
+
+            return post;
+        }
+
     }
 }

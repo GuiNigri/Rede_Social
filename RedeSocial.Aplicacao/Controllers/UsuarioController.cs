@@ -55,8 +55,10 @@ namespace RedeSocial.Aplicacao.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuarioModel(string id, [Bind("Id,Nome,Sobrenome,Cpf,DataNascimento,FotoPerfil,IdentityUser")] UsuarioModel usuarioModel)
+        public async Task<IActionResult> PutUsuarioModel(string id, [Bind("UsuarioModel, ImageBase64")] CreateAndUpdateHttpUsuarioModel createUsuarioModel)
         {
+            var usuarioModel = createUsuarioModel.UsuarioModel;
+            var imageBase64 = createUsuarioModel.ImageBase64;
 
             if (id != usuarioModel.IdentityUser)
             {
@@ -66,7 +68,7 @@ namespace RedeSocial.Aplicacao.Controllers
             try
             {
 
-                await _usuarioServices.UpdateAsync(usuarioModel);
+                await _usuarioServices.UpdateAsync(usuarioModel,imageBase64);
             }
             catch (ModelValidationExceptions e)
             {
@@ -87,7 +89,7 @@ namespace RedeSocial.Aplicacao.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<UsuarioModel>> PostUsuarioModel([Bind("UsuarioModel, imageBase64")] CreateAndUpdateHttpUsuarioModel createUsuarioModel)
+        public async Task<ActionResult<UsuarioModel>> PostUsuarioModel([Bind("UsuarioModel, ImageBase64")] CreateAndUpdateHttpUsuarioModel createUsuarioModel)
         {
 
             var usuarioModel = createUsuarioModel.UsuarioModel;

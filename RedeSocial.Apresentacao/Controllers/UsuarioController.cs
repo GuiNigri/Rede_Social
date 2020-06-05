@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using RedeSocial.Apresentacao.Models;
 using RedeSocial.Model.Entity;
 using RedeSocial.Model.Exceptions;
@@ -30,48 +26,15 @@ namespace RedeSocial.Apresentacao.Controllers
             _usuarioServices = usuarioServices;
             _userManager = userManager;
         }
-        // GET: Veiculo
-        public async Task<List<UsuarioViewModel>> GetAllAsync()
-        {
-            var listaUsuarios = await _usuarioServices.GetAllAsync();
 
-            var listaViewModelUsuario = listaUsuarios.Select(ConvertModelToViewModel).ToList();
-
-            return listaViewModelUsuario;
-
-        }
-
-        public async Task<UsuarioViewModel> GetByIdAsync(string id)
-        {
-            if (id == null)
-            {
-                return null;
-            }
-
-            var usuarioModel = await _usuarioServices.GetByIdAsync(id);
-
-            if (usuarioModel == null)
-            {
-                return null;
-            }
-
-            var usuarioViewModel = ConvertModelToViewModel(usuarioModel);
-
-            return usuarioViewModel;
-        }
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-
-
             return View("Index");
         }
 
-        // POST: Veiculo/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -88,8 +51,10 @@ namespace RedeSocial.Apresentacao.Controllers
                     if (result.Succeeded)
                     { 
                         usuarioViewModel.IdentityUser = user.Id;
+
                         var usuarioModel = ConvertViewModelToModel(usuarioViewModel);
                         await _usuarioServices.CreateAsync(usuarioModel, ConvertIFormFileToBase64(ImageFile));
+
                         return RedirectToAction("Index","Home");
                     }
                     foreach (var error in result.Errors)
@@ -119,14 +84,11 @@ namespace RedeSocial.Apresentacao.Controllers
 
         }
 
-        // POST: Veiculo/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Modelo,Cor,Ano,MarcaModelId,ImagemUri")] UsuarioViewModel usuarioViewModel, string newImage)
+        public async Task<IActionResult> Edit(string id, [Bind("Nome,Sobrenome,Cpf,FotoPerfil,DataNascimento,IdentityUser")] UsuarioEditViewModel usuarioEditViewModel, IFormFile ImageFile)
         {
-            if (id != usuarioViewModel.IdentityUser)
+            if (id != usuarioEditViewModel.IdentityUser)
             {
                 return NotFound();
             }
@@ -135,8 +97,9 @@ namespace RedeSocial.Apresentacao.Controllers
             {
                 try
                 {
-                    var usuarioModel = ConvertViewModelToModel(usuarioViewModel);
-                    await _usuarioServices.UpdateAsync(usuarioModel);
+                    var usuarioModel = ConvertEditViewModelToModel(usuarioEditViewModel);
+
+                    await _usuarioServices.UpdateAsync(usuarioModel,ConvertIFormFileToBase64(ImageFile));
 
                     return RedirectToAction("Index","Home");
                 }
@@ -163,37 +126,19 @@ namespace RedeSocial.Apresentacao.Controllers
             return View();
         }
 
-        // POST: Veiculo/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<bool> DeleteConfirmed(string id)
+        public async Task DeleteConfirmed(string id)
         {
             try
             {
                 await _usuarioServices.DeleteAsync(id);
-                return true;
             }
             catch (Exception ex)
             {
                 throw ex;
                 
             }
-        }
-
-        private static UsuarioViewModel ConvertModelToViewModel(UsuarioModel usuarioModel)
-        {
-            var usuarioViewModel = new UsuarioViewModel
-            {
-                IdentityUser = usuarioModel.IdentityUser,
-                Cpf = usuarioModel.Cpf,
-                DataNascimento = usuarioModel.DataNascimento,
-                Nome = usuarioModel.Nome,
-                Sobrenome = usuarioModel.Sobrenome,
-                FotoPerfil = usuarioModel.FotoPerfil
-          
-            };
-
-            return usuarioViewModel;
         }
 
         private static UsuarioEditViewModel ConvertModelToEditViewModel(UsuarioModel usuarioModel)
@@ -227,18 +172,38 @@ namespace RedeSocial.Apresentacao.Controllers
 
             return usuarioModel;
         }
+        private static UsuarioModel ConvertEditViewModelToModel(UsuarioEditViewModel usuarioEditViewModel)
+        {
+            var usuarioModel = new UsuarioModel
+            {
+                IdentityUser = usuarioEditViewModel.IdentityUser,
+                Cpf = usuarioEditViewModel.Cpf,
+                DataNascimento = usuarioEditViewModel.DataNascimento,
+                Nome = usuarioEditViewModel.Nome,
+                Sobrenome = usuarioEditViewModel.Sobrenome,
+                FotoPerfil = usuarioEditViewModel.FotoPerfil
+          
+            };
+
+            return usuarioModel;
+        }
 
         private static string ConvertIFormFileToBase64(IFormFile image)
         {
-            string imageBase64;
-            using (var ms = new MemoryStream())
+            if(image != null)
             {
-                image.CopyTo(ms);
-                var fileBytes = ms.ToArray();
-                imageBase64 = Convert.ToBase64String(fileBytes);
+                string imageBase64;
+                using (var ms = new MemoryStream())
+                {
+                    image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    imageBase64 = Convert.ToBase64String(fileBytes);
+                }
+
+                return imageBase64;
             }
 
-            return imageBase64;
+            return null;
         }
 
     }

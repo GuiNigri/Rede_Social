@@ -19,16 +19,6 @@ namespace RedeSocial.IoC
                      .AddEntityFrameworkStores<IdentityDbContext>();
         }
 
-        //        public static void RegisterIdentityForMvc(
-        //    this IServiceCollection services,
-        //    IConfiguration configuration)
-        //{
-        //    AddDbContext(services, configuration);
-        //
-        //    services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-        //        .AddEntityFrameworkStores<LoginContext>();
-        //}
-        //
         public static void RegisterIdentityForWebApi(
             this IServiceCollection services,
             IConfiguration configuration)

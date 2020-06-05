@@ -21,16 +21,39 @@ namespace RedeSocial.Services
         }
         public async Task CreateAsync(PostModel postModel)
         {
-            var blob = await _blobServices.CreateBlobAsync(postModel.UriImage);
+            if(postModel.UriImage != null)
+            {
+                var blob = await _blobServices.CreateBlobAsync(postModel.UriImage);
 
-            postModel.UriImage = blob;
+                postModel.UriImage = blob;
+            }
 
            await _postRepository.CreateAsync(postModel);
         }
 
-        public Task<IEnumerable<PostModel>> GetAll()
+        public async Task DeleteAsync(int id, string uri)
         {
-            return _postRepository.GetAll();
+            if(uri != null)
+            {
+                await _blobServices.DeleteBlobAsync(uri);
+            }
+
+            await _postRepository.DeleteAsync(id);
+        }
+
+        public async Task<PostModel> GetByidAsync(int id)
+        {
+            return await _postRepository.GeByidAsync(id);
+        }
+
+        public async Task<IEnumerable<PostModel>> GetAllAsync()
+        {
+            return await _postRepository.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<PostModel>> GetPostsByUserAsync(string id)
+        {
+            return await _postRepository.GetPostsByUserAsync(id);
         }
     }
 }

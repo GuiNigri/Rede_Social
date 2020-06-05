@@ -26,6 +26,7 @@ namespace RedeSocial.Apresentacao.HttpServices
             _httpClient = httpClientFactory.CreateClient(projetoHttpOptions.CurrentValue.Name);
             _httpClient.Timeout = TimeSpan.FromMinutes(_projetoHttpOptions.CurrentValue.Timeout);
         }
+
         public async Task CreateAsync(PostModel postModel)
         {
             var path  = $"{_projetoHttpOptions.CurrentValue.PostPath}";
@@ -40,10 +41,36 @@ namespace RedeSocial.Apresentacao.HttpServices
             }
         }
 
-        public async Task<IEnumerable<PostModel>> GetAll()
+        public async Task DeleteAsync(int id, string uri = null)
+        {
+            var pathWithId  = $"{_projetoHttpOptions.CurrentValue.PostPath}/{id}";
+
+            var httpResponseMessage = await _httpClient.DeleteAsync(pathWithId);
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                
+            }
+        }
+
+        public async Task<IEnumerable<PostModel>> GetAllAsync()
         {
             var path = $"{_projetoHttpOptions.CurrentValue.PostPath}";
             var result = await _httpClient.GetStringAsync(path);
+            return JsonConvert.DeserializeObject<IEnumerable<PostModel>>(result);
+        }
+
+        public async Task<PostModel> GetByidAsync(int id)
+        {
+            var pathWithId = $"{_projetoHttpOptions.CurrentValue.PostPath}/ById/{id}";
+            var result = await _httpClient.GetStringAsync(pathWithId);
+            return JsonConvert.DeserializeObject<PostModel>(result);
+        }
+
+        public async Task<IEnumerable<PostModel>> GetPostsByUserAsync(string id)
+        {
+            var pathWithId = $"{_projetoHttpOptions.CurrentValue.PostPath}/{id}";
+            var result = await _httpClient.GetStringAsync(pathWithId);
             return JsonConvert.DeserializeObject<IEnumerable<PostModel>>(result);
         }
     }

@@ -43,7 +43,7 @@ namespace RedeSocial.Data
 
         public async Task<UsuarioModel> GetByIdAsync(string Id)
         {
-            return await _context.UsuarioModel.FindAsync(Id); ;
+            return await _context.UsuarioModel.FindAsync(Id);
         }
 
         public bool UsuarioModelExists(string id)

@@ -8,6 +8,7 @@ namespace RedeSocial.Apresentacao.Models
 {
     public class HomeViewModel
     {
+        public string IdentityUser { get; set; }
         public string NomePerfil { get; set; }
         public string FotoPerfil { get; set; }
         public int Seguidores { get; set; }

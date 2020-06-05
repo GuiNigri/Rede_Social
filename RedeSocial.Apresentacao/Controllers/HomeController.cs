@@ -32,15 +32,13 @@ namespace RedeSocial.Apresentacao.Controllers
         public async Task<IActionResult> Index()
         {
             var postLista = new List<PostViewModel>();
-            var posts = await _postServices.GetAll();
+            var posts = await _postServices.GetAllAsync();
 
             foreach (var post in posts)
-            {
-                   
+            {          
                 var postViewModel = await ConverterIdToNameAndModelToViewModel(post);
 
                 postLista.Add(postViewModel);
-
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -49,6 +47,7 @@ namespace RedeSocial.Apresentacao.Controllers
 
             var homeViewModel = new HomeViewModel
             {
+                IdentityUser = user.Id,
                 NomePerfil = usuarioLogadoNome,
                 FotoPerfil = usuarioLogado.FotoPerfil,
                 ListaPost = postLista
@@ -57,10 +56,6 @@ namespace RedeSocial.Apresentacao.Controllers
             return View(homeViewModel);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -78,13 +73,14 @@ namespace RedeSocial.Apresentacao.Controllers
 
             var postViewModel = new PostViewModel
             {
-                    Id = postModel.Id,
-                    NomeCompleto = nomeUsuario,
-                    Privacidade = postModel.Privacidade,
-                    Texto = postModel.Texto,
-                    UriImage = postModel.UriImage,
-                    TempoDaPostagem = tempo,
-                    FormatacaoTempo = formatoDeTempo
+                Id = postModel.Id,
+                NomeCompleto = nomeUsuario,
+                Privacidade = postModel.Privacidade,
+                Texto = postModel.Texto,
+                UriImage = postModel.UriImage,
+                TempoDaPostagem = tempo,
+                FormatacaoTempo = formatoDeTempo,
+                IdentityUser = postModel.IdentityUser
             };
 
             return postViewModel;
@@ -119,7 +115,7 @@ namespace RedeSocial.Apresentacao.Controllers
             }
             else if (tempo > 525600)
             {
-                //mes
+                //ano
                 tempo /= 525600;
                 formatoDeTempo = "Anos";
             }

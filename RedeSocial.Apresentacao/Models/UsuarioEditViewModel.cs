@@ -14,7 +14,6 @@ namespace RedeSocial.Apresentacao.Models
         public string Sobrenome { get; set; }
         [Required]
         public long Cpf { get; set; }
-        [Required]
         public string FotoPerfil { get; set; }
         [Required]
         [DataType(DataType.Date)]

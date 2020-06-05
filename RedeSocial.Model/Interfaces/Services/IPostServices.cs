@@ -8,7 +8,10 @@ namespace RedeSocial.Model.Interfaces.Services
 {
     public interface IPostServices
     {
-        Task<IEnumerable<PostModel>> GetAll();
+        Task<IEnumerable<PostModel>> GetAllAsync();
+        Task<IEnumerable<PostModel>> GetPostsByUserAsync(string id);
+        Task<PostModel> GetByidAsync(int id);
         Task CreateAsync(PostModel postModel);
+        Task DeleteAsync(int id, string uri);
     }
 }

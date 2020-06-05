@@ -5,6 +5,7 @@ using RedeSocial.Model.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,11 +24,26 @@ namespace RedeSocial.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<PostModel>> GetAll()
+        public async Task DeleteAsync(int id)
         {
+            var postModel = await _context.PostModel.FindAsync(id);
+            _context.PostModel.Remove(postModel);
+            await _context.SaveChangesAsync();
+        }
 
+        public async Task<PostModel> GeByidAsync(int id)
+        {
+            return await _context.PostModel.FindAsync(id);
+        }
 
+        public async Task<IEnumerable<PostModel>> GetAllAsync()
+        {
             return _context.PostModel.OrderByDescending(x => x.DataPostagem);
+        }
+
+        public async Task<IEnumerable<PostModel>> GetPostsByUserAsync(string id)
+        {
+            return await _context.PostModel.Where(x => x.IdentityUser == id).ToListAsync();
         }
     }
 }

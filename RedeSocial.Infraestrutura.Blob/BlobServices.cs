@@ -21,6 +21,7 @@ namespace RedeSocial.Infraestrutura.Blob
 
             _containerClient = _blobClient.GetBlobContainerClient(ContainerAzure);
         }
+
         public async Task<string> CreateBlobAsync(string imageBase64)
         {
             var stream = new MemoryStream(Convert.FromBase64String(imageBase64));

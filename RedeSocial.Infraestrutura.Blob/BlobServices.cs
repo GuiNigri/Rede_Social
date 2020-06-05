@@ -11,7 +11,7 @@ namespace RedeSocial.Infraestrutura.Blob
         private readonly BlobServiceClient _blobClient;
         private readonly BlobContainerClient _containerClient;
 
-        private const string ContainerAzure = "tp3blob";
+        private const string ContainerAzure = "tp9blob";
 
         
        

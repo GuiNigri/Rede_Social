@@ -15,9 +15,9 @@ namespace RedeSocial.Apresentacao.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IPostServices _postServices;
 
-        public PostController(UserManager<IdentityUser> UserManager, IPostServices postServices)
+        public PostController(UserManager<IdentityUser> userManager, IPostServices postServices)
         {
-            _userManager = UserManager;
+            _userManager = userManager;
             _postServices = postServices;
         }
 
@@ -46,7 +46,7 @@ namespace RedeSocial.Apresentacao.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction("Index", "Home");
             }
         }
 

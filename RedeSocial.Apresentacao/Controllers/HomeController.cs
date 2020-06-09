@@ -20,26 +20,22 @@ namespace RedeSocial.Apresentacao.Controllers
         private readonly IPostServices _postServices;
         private readonly IUsuarioServices _usuarioServices;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IAmigosServices _amigosServices;
 
-        public HomeController(ILogger<HomeController> logger, IPostServices postServices, IUsuarioServices usuarioServices, UserManager<IdentityUser> userManager)
+        public HomeController(ILogger<HomeController> logger, IPostServices postServices, IUsuarioServices usuarioServices, UserManager<IdentityUser> userManager, IAmigosServices amigosServices)
         {
             _logger = logger;
             _postServices = postServices;
             _usuarioServices = usuarioServices;
             _userManager = userManager;
+            _amigosServices = amigosServices;
         }
 
         public async Task<IActionResult> Index()
         {
-            var postLista = new List<PostViewModel>();
-            var posts = await _postServices.GetAllAsync();
+            var solicitacoes = await GetSolicitacoesAmizade();
 
-            foreach (var post in posts)
-            {          
-                var postViewModel = await ConverterIdToNameAndModelToViewModel(post);
-
-                postLista.Add(postViewModel);
-            }
+            var posts = await GetPostsAsync();
 
             var user = await _userManager.GetUserAsync(User);
             var usuarioLogado = await _usuarioServices.GetByIdAsync(user.Id);
@@ -50,7 +46,8 @@ namespace RedeSocial.Apresentacao.Controllers
                 IdentityUser = user.Id,
                 NomePerfil = usuarioLogadoNome,
                 FotoPerfil = usuarioLogado.FotoPerfil,
-                ListaPost = postLista
+                ListaPost = posts,
+                SolicitacoesPendentes = solicitacoes
             };
 
             return View(homeViewModel);
@@ -122,6 +119,57 @@ namespace RedeSocial.Apresentacao.Controllers
             }
 
             return (tempo, formatoDeTempo);
+        }
+
+        private async Task<List<PostViewModel>> GetPostsAsync()
+        {
+            var postLista = new List<PostViewModel>();
+
+            var posts = await _postServices.GetAllAsync();
+
+            foreach (var post in posts)
+            {
+                var postViewModel = await ConverterIdToNameAndModelToViewModel(post);
+
+                postLista.Add(postViewModel);
+            }
+
+            return postLista;
+        }
+
+        private async Task<IEnumerable<AmigosSolicitacoesViewModel>> GetSolicitacoesAmizade()
+        {
+            var listaFormatada = new List<AmigosSolicitacoesViewModel>();
+
+            var user = await _userManager.GetUserAsync(User);
+
+            var solicitacoes = await _amigosServices.GetSolicitacoesPendentes(user.Id);
+
+            foreach (var solicitacao in solicitacoes)
+            {
+                var amigosSolicitacoesViewModel = await ConverterIdToNameAndModelToViewModel(solicitacao);
+
+                listaFormatada.Add(amigosSolicitacoesViewModel);
+            }
+
+            return listaFormatada;
+
+        }
+
+        public async Task<AmigosSolicitacoesViewModel> ConverterIdToNameAndModelToViewModel(AmigosModel amigosModel)
+        {
+            var usuario = await _usuarioServices.GetByIdAsync(amigosModel.UserId2);
+
+            var nomeUsuario = usuario.Nome + " " + usuario.Sobrenome;
+
+            var amigosSolicitacoesViewModel = new AmigosSolicitacoesViewModel()
+            {
+                Id = amigosModel.Id,
+                NomeCompleto = nomeUsuario,
+                Perfil = usuario.IdentityUser
+            };
+
+            return amigosSolicitacoesViewModel;
         }
     }
 }

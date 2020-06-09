@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RedeSocial.Data.RedeSocial.Context;
 
 namespace RedeSocial.Data.RedeSocial.Migrations
 {
     [DbContext(typeof(RedeSocialContext))]
-    partial class RedeSocialContextModelSnapshot : ModelSnapshot
+    [Migration("20200608180618_AtualizarPB")]
+    partial class AtualizarPB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,9 +30,6 @@ namespace RedeSocial.Data.RedeSocial.Migrations
 
                     b.Property<DateTime>("DataInicioAmizade")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("StatusAmizade")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserId1")
                         .HasColumnType("nvarchar(max)");

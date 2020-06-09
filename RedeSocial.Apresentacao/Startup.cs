@@ -35,6 +35,9 @@ namespace RedeSocial.Apresentacao
             services.RegisterConfigurations(Configuration);
 
             services.RegisterIdentityForMvc(Configuration);
+
+            //services.RegisterInjectionsForWebApi(Configuration);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

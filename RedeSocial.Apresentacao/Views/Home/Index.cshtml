@@ -11,13 +11,28 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="h6 text-muted">Seguidores</div>
+                        <div class="h6 text-muted">Amigos</div>
                         <div class="h5">52342</div>
                     </li>
+
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="h5"></div>
+                    <div class="h6 text-muted">Solicitações de amizade</div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var solicitacao in Model.SolicitacoesPendentes)
+                    {
                     <li class="list-group-item">
-                        <div class="h6 text-muted">Seguindo</div>
-                        <div class="h5">6758</div>
+                        <div class="h6 text-muted"><img class="rounded-circle" src="@Model.FotoPerfil" width="45" /> 
+                            <a class="text-dark" asp-controller="Amigos" asp-action="Perfil" asp-route-user="@solicitacao.Perfil"> @solicitacao.NomeCompleto</a>
+                            <a class="btn btn-success pull-right" style="margin: 15px;" asp-controller="Amigos" asp-action="Create" asp-route-id="@solicitacao.Id">Aceitar </a> 
+                            <a class="btn btn-danger pull-right" style="margin: 15px;" asp-controller="Amigos" asp-action="Create" asp-route-id="@solicitacao.Id">Recusar </a>
+                            </div>
                     </li>
+                    }
                 </ul>
             </div>
         </div>

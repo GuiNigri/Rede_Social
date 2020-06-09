@@ -5,15 +5,12 @@ using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Data.Entity.Data
 {
-    public class IdentityDbContext : IdentityDbContext<IdentityUser>
+    public class IdentityContext : IdentityDbContext<IdentityUser>
     {
-        public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
-            : base((DbContextOptions) options)
+        public IdentityContext(DbContextOptions<IdentityContext> options)
+            : base(options)
         {
         }
-
-        public DbSet<UsuarioModel> UsuariosDB { get; set; }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

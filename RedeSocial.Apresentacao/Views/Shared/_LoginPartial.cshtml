@@ -4,7 +4,7 @@
 
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-@inject IUsuarioServices usuarioServices
+@inject IUsuarioServices UsuarioServices
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
@@ -14,7 +14,7 @@
                 var user = await UserManager.GetUserAsync(User);
                 var id = user.Id;
 
-                var usuarioModel = await usuarioServices.GetByIdAsync(id);
+                var usuarioModel = await UsuarioServices.GetByIdAsync(id);
                 var nomeUsuario = usuarioModel.Nome;
 
                 var fotoPerfil = usuarioModel.FotoPerfil;

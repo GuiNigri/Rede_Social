@@ -9,7 +9,7 @@ using RedeSocial.Data.Entity.Data;
 
 namespace RedeSocial.Data.Entity.Migrations
 {
-    [DbContext(typeof(IdentityDbContext))]
+    [DbContext(typeof(IdentityContext))]
     [Migration("20200507202201_model2")]
     partial class model2
     {

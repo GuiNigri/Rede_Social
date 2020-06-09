@@ -1,19 +1,20 @@
-﻿using RedeSocial.Model.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
+using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Apresentacao.Models
 {
-    public class HomeViewModel
+    public class PerfilViewModel
     {
-        public string IdentityUser { get; set; }
+        public string IdentityUserLogado { get; set; }
+        public string IdentityUserPerfil { get; set; }
         public string NomePerfil { get; set; }
         public string FotoPerfil { get; set; }
         public IEnumerable<AmigosModel> Amigos { get; set; }
-
-        public IEnumerable<AmigosSolicitacoesViewModel> SolicitacoesPendentes { get; set; }
+        public int StatusAmizade { get; set; }
 
         public IEnumerable<PostViewModel> ListaPost;
     }

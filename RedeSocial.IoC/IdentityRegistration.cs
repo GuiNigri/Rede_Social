@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using RedeSocial.Data.Entity.Data;
 
 
 namespace RedeSocial.IoC
@@ -16,7 +16,7 @@ namespace RedeSocial.IoC
             AddDbContext(services, configuration);
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                     .AddEntityFrameworkStores<IdentityDbContext>();
+                     .AddEntityFrameworkStores<IdentityContext>();
         }
 
         public static void RegisterIdentityForWebApi(
@@ -26,12 +26,12 @@ namespace RedeSocial.IoC
             AddDbContext(services, configuration);
         
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<IdentityDbContext>();
+                .AddEntityFrameworkStores<IdentityContext>();
         }
         
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<IdentityDbContext>(options =>
+            services.AddDbContext<IdentityContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("IdentityDbContextConnection")));
         }
     }

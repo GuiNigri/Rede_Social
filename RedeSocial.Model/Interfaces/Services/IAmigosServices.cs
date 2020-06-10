@@ -12,7 +12,9 @@ namespace RedeSocial.Model.Interfaces.Services
         Task UpdateAsync(AmigosModel amigosModel);
         Task DeleteAsync(int id);
         Task<IEnumerable<AmigosModel>> GetAllAsync();
-        Task<AmigosModel> GetByIdAsync(string userLogado, string perfilAcessado);
+        Task<AmigosModel> GetByUserAsync(string userLogado, string perfilAcessado);
+        Task<AmigosModel> GetByIdAsync(int id);
         Task<IEnumerable<AmigosModel>> GetSolicitacoesPendentes(string userLogado);
+        Task<IEnumerable<AmigosModel>> GetListByUserAsync(string userLogado);
     }
 }

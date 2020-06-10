@@ -16,15 +16,17 @@ using RedeSocial.Model.Interfaces.Services;
 namespace RedeSocial.Apresentacao.Controllers
 {
     [Authorize]
-    public class UsuarioController : Controller
+    public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioServices _usuarioServices;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IAmigosServices _amigosServices;
 
-        public UsuarioController(IUsuarioServices usuarioServices,UserManager<IdentityUser> userManager)
+        public UsuarioController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices) : base(userManager, usuarioServices, postServices, amigosServices)
         {
             _usuarioServices = usuarioServices;
             _userManager = userManager;
+            _amigosServices = amigosServices;
         }
 
 
@@ -35,24 +37,59 @@ namespace RedeSocial.Apresentacao.Controllers
             return View("Index");
         }
 
+        // GET: Amigos
+        [HttpGet]
+        public async Task<IActionResult> Perfil(string userPerfil)
+        {
+            var userIdLogado = await GetUserIdentityAsync();
+
+            if (userPerfil == userIdLogado || userPerfil == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var statusAmizade = 0;
+
+            var usuarioPerfil = await GetUsuarioModelAsync(userPerfil);
+
+            var(postList,usuarioLogado,amigosList) = await HomeIndexAndUsuarioPerfilBase(userPerfil, userIdLogado);
+
+            var amigosModel = await _amigosServices.GetByUserAsync(usuarioLogado.IdentityUser, userPerfil);
+
+            statusAmizade = amigosModel?.StatusAmizade ?? 0;
+
+            var perfilViewModel = new PerfilViewModel
+            {
+                IdentityUserLogado = userIdLogado,
+                IdentityUserPerfil = usuarioPerfil.IdentityUser,
+                NomePerfil = usuarioPerfil.Nome + " " + usuarioPerfil.Sobrenome,
+                FotoPerfil = usuarioPerfil.FotoPerfil,
+                ListaPost = postList,
+                StatusAmizade = statusAmizade,
+                Amigos = amigosList
+            };
+
+
+            return View("Perfil", perfilViewModel);
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nome,Sobrenome,Cpf,DataNascimento,Email,Password,ConfirmPassword,IdentityUser")] UsuarioViewModel usuarioViewModel, IFormFile ImageFile)
+        public async Task<IActionResult> Create([Bind("Nome,Sobrenome,Cpf,DataNascimento,Email,Password,ConfirmPassword,IdentityUser")] UsuarioCreateViewModel usuarioCreateViewModel, IFormFile ImageFile)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
 
-                    var user = new IdentityUser { UserName = usuarioViewModel.Email, Email = usuarioViewModel.Email }; 
-                    var result = await _userManager.CreateAsync(user, usuarioViewModel.Password);
+                    var user = new IdentityUser { UserName = usuarioCreateViewModel.Email, Email = usuarioCreateViewModel.Email }; 
+                    var result = await _userManager.CreateAsync(user, usuarioCreateViewModel.Password);
 
                     if (result.Succeeded)
                     { 
-                        usuarioViewModel.IdentityUser = user.Id;
+                        usuarioCreateViewModel.IdentityUser = user.Id;
 
-                        var usuarioModel = ConvertViewModelToModel(usuarioViewModel);
+                        var usuarioModel = ConvertViewModelToModel(usuarioCreateViewModel);
                         await _usuarioServices.CreateAsync(usuarioModel, ConvertIFormFileToBase64(ImageFile));
 
                         return RedirectToAction("Index","Home");
@@ -76,7 +113,7 @@ namespace RedeSocial.Apresentacao.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var usuarioModel = await _usuarioServices.GetByIdAsync(id);
+            var usuarioModel = await GetUsuarioModelAsync(id);
 
             var usuarioEditViewModel = ConvertModelToEditViewModel(usuarioModel);
 
@@ -157,16 +194,16 @@ namespace RedeSocial.Apresentacao.Controllers
             return usuarioEditViewModel;
         }
 
-        private static UsuarioModel ConvertViewModelToModel(UsuarioViewModel usuarioViewModel)
+        private static UsuarioModel ConvertViewModelToModel(UsuarioCreateViewModel usuarioCreateViewModel)
         {
             var usuarioModel = new UsuarioModel
             {
                 FotoPerfil = null,
-                IdentityUser = usuarioViewModel.IdentityUser,
-                Cpf = usuarioViewModel.Cpf,
-                DataNascimento = usuarioViewModel.DataNascimento,
-                Nome = usuarioViewModel.Nome,
-                Sobrenome = usuarioViewModel.Sobrenome
+                IdentityUser = usuarioCreateViewModel.IdentityUser,
+                Cpf = usuarioCreateViewModel.Cpf,
+                DataNascimento = usuarioCreateViewModel.DataNascimento,
+                Nome = usuarioCreateViewModel.Nome,
+                Sobrenome = usuarioCreateViewModel.Sobrenome
           
             };
 
@@ -186,24 +223,6 @@ namespace RedeSocial.Apresentacao.Controllers
             };
 
             return usuarioModel;
-        }
-
-        private static string ConvertIFormFileToBase64(IFormFile image)
-        {
-            if(image != null)
-            {
-                string imageBase64;
-                using (var ms = new MemoryStream())
-                {
-                    image.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    imageBase64 = Convert.ToBase64String(fileBytes);
-                }
-
-                return imageBase64;
-            }
-
-            return null;
         }
 
     }

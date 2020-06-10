@@ -10,14 +10,12 @@ using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Apresentacao.Controllers
 {
-    public class PostController : Controller
+    public class PostController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly IPostServices _postServices;
 
-        public PostController(UserManager<IdentityUser> userManager, IPostServices postServices)
+        public PostController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices) : base(userManager, usuarioServices, postServices, amigosServices)
         {
-            _userManager = userManager;
             _postServices = postServices;
         }
 
@@ -28,21 +26,21 @@ namespace RedeSocial.Apresentacao.Controllers
         {
             try
             {
-                var userIdentity = await RecuperarIdentityUser();
+                var userId = await GetUserIdentityAsync();
 
                 var postModel = new PostModel
                 {
-                    IdentityUser = userIdentity,
+                    IdentityUser = userId,
                     Privacidade = privacidade,
                     Texto = message,
                     UriImage = ConvertIFormFileToBase64(customFile),
                     DataPostagem = DateTime.Now
-                    
+
                 };
 
                 await _postServices.CreateAsync(postModel);
 
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             catch
             {
@@ -56,47 +54,23 @@ namespace RedeSocial.Apresentacao.Controllers
         {
             try
             {
-                var userIdentity = await RecuperarIdentityUser();
+                var userId = await GetUserIdentityAsync();
 
                 var postModel = await _postServices.GetByidAsync(id);
-                var userIdPost = postModel.IdentityUser;
 
-                if(userIdentity == userIdPost)
+                if (userId == postModel.IdentityUser)
                 {
 
-                    await _postServices.DeleteAsync(id,null);
+                    await _postServices.DeleteAsync(id, null);
                 }
 
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
         }
 
-        private static string ConvertIFormFileToBase64(IFormFile image)
-        {
-            if(image != null)
-            {
-                string imageBase64;
-                using (var ms = new MemoryStream())
-                {
-                    image.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    imageBase64 = Convert.ToBase64String(fileBytes);
-                }
-
-                return imageBase64;
-            }
-            return null;
-        }
-
-        private async Task<string> RecuperarIdentityUser()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            return user.Id;
-
-        }
     }
 }

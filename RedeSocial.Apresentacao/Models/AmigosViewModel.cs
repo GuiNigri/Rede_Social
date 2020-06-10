@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace RedeSocial.Apresentacao.Models
 {
-    public class AmigosSolicitacoesViewModel
+    public class AmigosViewModel
     {
         public int Id { get; set; }
         public string NomeCompleto { get; set; }
         public string Perfil { get; set; }
+        public string Foto { get; set; }
 
     }
 }

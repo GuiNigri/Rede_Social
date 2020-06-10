@@ -45,12 +45,28 @@ namespace RedeSocial.Data
             return await _context.AmigosModel.ToListAsync();
         }
 
-        public async Task<AmigosModel> GetByIdAsync(string userLogado, string perfilAcessado)
+        public async Task<AmigosModel> GetByUsersAsync(string userLogado, string perfilAcessado)
         {
             try
             {
                 var consulta = await _context.AmigosModel.FirstOrDefaultAsync(x =>
-                    x.UserId1 == userLogado && x.UserId2 == perfilAcessado || x.UserId1 == perfilAcessado && x.UserId2 == userLogado);
+                    x.UserIdSolicitado == userLogado && x.UserIdSolicitante == perfilAcessado || x.UserIdSolicitado == perfilAcessado && x.UserIdSolicitante == userLogado);
+                return consulta;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<IEnumerable<AmigosModel>> GetListByUserAsync(string userLogado)
+        {
+            try
+            {
+                var consulta = await _context.AmigosModel.Where(x =>
+                    x.UserIdSolicitado == userLogado && x.StatusAmizade == 2 || x.UserIdSolicitante == userLogado && x.StatusAmizade == 2).ToListAsync();
+
                 return consulta;
             }
             catch (Exception ex)
@@ -63,8 +79,13 @@ namespace RedeSocial.Data
         public async Task<IEnumerable<AmigosModel>> GetSolicitacoesPendentes(string userLogado)
         {
             return await _context.AmigosModel.Where(x =>
-                    x.UserId1 == userLogado && x.StatusAmizade == 1)
+                    x.UserIdSolicitado == userLogado && x.StatusAmizade == 1)
                 .ToListAsync();
+        }
+
+        public async Task<AmigosModel> GetByIdAsync(int id)
+        {
+            return await _context.AmigosModel.FindAsync(id);
         }
     }
 }

@@ -11,9 +11,9 @@ namespace RedeSocial.Apresentacao.Models
         public string IdentityUser { get; set; }
         public string NomePerfil { get; set; }
         public string FotoPerfil { get; set; }
-        public IEnumerable<AmigosModel> Amigos { get; set; }
+        public IEnumerable<AmigosViewModel> Amigos { get; set; }
 
-        public IEnumerable<AmigosSolicitacoesViewModel> SolicitacoesPendentes { get; set; }
+        public IEnumerable<AmigosViewModel> SolicitacoesPendentes { get; set; }
 
         public IEnumerable<PostViewModel> ListaPost;
     }

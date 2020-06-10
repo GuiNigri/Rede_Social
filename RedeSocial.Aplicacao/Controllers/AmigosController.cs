@@ -48,6 +48,32 @@ namespace RedeSocial.Aplicacao.Controllers
             return base.Ok();
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult<AmigosModel>> PutAmigosModel(int id, [Bind("Id,UserId1,UserId2,DataInicioAmizade,StatusAmizade")] AmigosModel amigosModel)
+        {
+            if (id != amigosModel.Id)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _amigosServices.UpdateAsync(amigosModel);
+            }
+            catch (ModelValidationExceptions e)
+            {
+                ModelState.AddModelError(e.PropertyName, e.Message);
+                return BadRequest(ModelState);
+            }
+
+            return base.Ok();
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AmigosModel>>> GetAmigosModel()
         {
@@ -63,44 +89,82 @@ namespace RedeSocial.Aplicacao.Controllers
             {
                 return NotFound();
             }
-            var amigosModel = await _amigosServices.GetByIdAsync(userLogado, perfilAcessado);
+            var amigosModel = await _amigosServices.GetByUserAsync(userLogado, perfilAcessado);
 
 
             return amigosModel;
         }
 
-        [HttpGet("{userLogado}")]
-        public async Task<ActionResult<IEnumerable<AmigosModel>>> GetAmigosModel(string userLogado)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AmigosModel>> GetAmigosModel(int id)
+        {
+            if (id <= 0)
+            {
+                return NotFound();
+            }
+            var amigosModel = await _amigosServices.GetByIdAsync(id);
+        
+            if (amigosModel == null)
+            {
+                return NotFound();
+            }
+        
+            return amigosModel;
+        }
+
+        [HttpGet("pendentes/{user}")]
+        public async Task<ActionResult<IEnumerable<AmigosModel>>> GetAmigosModel(string user)
+        {
+            try
+            {
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var amigosModel = await _amigosServices.GetSolicitacoesPendentes(user);
+
+
+                return amigosModel.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        [HttpGet("usuario/{userLogado}")]
+        public async Task<ActionResult<IEnumerable<AmigosModel>>> GetAmigosModelList(string userLogado)
         {
             if (userLogado == null)
             {
                 return NotFound();
             }
-            var amigosModel = await _amigosServices.GetSolicitacoesPendentes(userLogado);
+            var amigosModel = await _amigosServices.GetListByUserAsync(userLogado);
 
 
             return amigosModel.ToList();
         }
 
-        // [HttpDelete("{id}")]
-        // public async Task<ActionResult<AmigosModel>> DeleteAmigosModel(int id)
-        // {
-        //     if (id <= 0)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     var amigosModel = await _amigosServices.GetByidAsync(id);
-        //
-        //     if (amigosModel == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     await _amigosServices.DeleteAsync(id, amigosModel.UriImage);
-        //
-        //     return amigosModel;
-        // }
+         [HttpDelete("{id}")]
+         public async Task<ActionResult<AmigosModel>> DeleteAmigosModel(int id)
+         {
+             if (id <= 0)
+             {
+                 return NotFound();
+             }
+        
+             var amigosModel = await _amigosServices.GetByIdAsync(id);
+        
+             if (amigosModel == null)
+             {
+                 return NotFound();
+             }
+        
+             await _amigosServices.DeleteAsync(id);
+        
+             return amigosModel;
+         }
 
     }
 }

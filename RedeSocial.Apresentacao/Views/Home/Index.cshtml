@@ -12,7 +12,7 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="h6 text-muted">Amigos</div>
-                        <div class="h5">52342</div>
+                        <div class="h5">@Model.Amigos.Count()</div>
                     </li>
 
                 </ul>
@@ -25,11 +25,23 @@
                 <ul class="list-group list-group-flush">
                     @foreach (var solicitacao in Model.SolicitacoesPendentes)
                     {
-                    <li class="list-group-item">
-                        <div class="h6 text-muted"><img class="rounded-circle" src="@Model.FotoPerfil" width="45" /> 
-                            <a class="text-dark" asp-controller="Amigos" asp-action="Perfil" asp-route-user="@solicitacao.Perfil"> @solicitacao.NomeCompleto</a>
-                            <a class="btn btn-success pull-right" style="margin: 15px;" asp-controller="Amigos" asp-action="Create" asp-route-id="@solicitacao.Id">Aceitar </a> 
-                            <a class="btn btn-danger pull-right" style="margin: 15px;" asp-controller="Amigos" asp-action="Create" asp-route-id="@solicitacao.Id">Recusar </a>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="h6 text-muted col-md-12">
+                                    <img class="rounded-circle" src="@solicitacao.Foto" width="45" />
+                                    <a class="text-dark" asp-controller="Usuario" asp-action="Perfil" asp-route-userPerfil="@solicitacao.Perfil"> @solicitacao.NomeCompleto</a>
+                                </div>
+                                <div class="col-md-12 pull-right">
+                                    <form asp-controller="Amigos" asp-action="Update" asp-route-id="@solicitacao.Id" method="post">
+                                        <button class="btn btn-success pull-right">Aceitar </button>
+                                    </form>
+                                    <form asp-controller="Amigos" asp-action="Delete" asp-route-id="@solicitacao.Id" method="post">
+                                        <button class="btn btn-danger pull-right">Recusar </button>
+                                    </form>
+                                </div>
+                                <div class="col-md-6 pull-right">
+          
+                                </div>
                             </div>
                     </li>
                     }
@@ -95,7 +107,8 @@
                                 </div>
                                 <div class="ml-2">
                                     <div class="h5 m-0"></div>
-                                    <div class="h7 text-muted">@post.NomeCompleto</div>
+                                    <div class="h7 text-muted"><a class="text-dark" asp-controller="Usuario" asp-action="Perfil" asp-route-userPerfil="@post.IdentityUser">@post.NomeCompleto</a>
+                                        </div>
                                 </div>
                             </div>
                             @if (post.IdentityUser == Model.IdentityUser)
@@ -142,15 +155,27 @@
             <div class="card">
                 <div class="card-body">
                     <div class="h5"></div>
-                    <div class="h4 text-muted">Lista de amigos</div>
+                    <div class="h5 text-muted">Lista de amigos</div>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="h5"><img src="" />  Amigo 1</div>
-                    </li>
-                    <li class="list-group-item">
-                         <div class="h5"><img src="" /> Amigo 2</div>
-                    </li>
+                    @foreach (var amigo in Model.Amigos)
+                    {
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="h6 col-md-10">
+                                    <img class="rounded-circle" src="@amigo.Foto" width="45"/>
+                                    <a class="text-dark" asp-controller="Usuario" asp-action="Perfil" asp-route-userPerfil="@amigo.Perfil"> @amigo.NomeCompleto </a>
+                                </div>
+                                <div class="col-sm-2" style="margin-top: 15px;">
+                                    <form asp-controller="Amigos" asp-action="Delete" asp-route-id="@amigo.Id" method="post">
+                                        <button class="btn-sm btn-danger"><i class="fa fa-remove"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </li>
+                    }
+
                 </ul>
             </div>
         </div>

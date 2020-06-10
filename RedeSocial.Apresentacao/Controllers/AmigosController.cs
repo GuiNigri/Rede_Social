@@ -10,70 +10,15 @@ using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Apresentacao.Controllers
 {
-    public class AmigosController : Controller
+    public class AmigosController : ControllerBase
     {
         private readonly IAmigosServices _amigosServices;
-        private readonly IPostServices _postServices;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUsuarioServices _usuarioServices;
 
 
-        public AmigosController(IAmigosServices amigosServices, IPostServices postServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices)
+        public AmigosController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices) : base(userManager, usuarioServices, postServices, amigosServices)
         {
             _amigosServices = amigosServices;
-            _postServices = postServices;
-            _userManager = userManager;
-            _usuarioServices = usuarioServices;
         }
-
-        // GET: Amigos
-        [HttpGet]
-        public async Task<IActionResult> Perfil(string user)
-        {
-            var identityUser = await _userManager.GetUserAsync(User);
-
-            if (user == identityUser.Id)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            var postLista = new List<PostViewModel>();
-
-            var posts = await _postServices.GetPostsByUserAsync(user);
-
-           foreach (var post in posts)
-           {
-               var postViewModel = await ConverterIdToNameAndModelToViewModel(post);
-           
-               postLista.Add(postViewModel);
-           }
-
-           var StatusAmizade = 0;
-
-           var usuarioPerfil = await _usuarioServices.GetByIdAsync(user);
-
-            
-
-           var usuarioLogado = await _usuarioServices.GetByIdAsync(identityUser.Id);
-
-           var amizade = await _amigosServices.GetByIdAsync(usuarioLogado.IdentityUser,user);
-
-            StatusAmizade = amizade?.StatusAmizade ?? 0;
-
-           var perfilViewModel = new PerfilViewModel
-           {
-               IdentityUserLogado = identityUser.Id,
-               IdentityUserPerfil = usuarioPerfil.IdentityUser,
-               NomePerfil = usuarioPerfil.Nome + " " + usuarioPerfil.Sobrenome,
-               FotoPerfil = usuarioPerfil.FotoPerfil,
-               ListaPost = postLista,
-               StatusAmizade = StatusAmizade
-           };
-
-
-            return View("Perfil", perfilViewModel);
-        }
-
 
         // POST: Amigos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -84,92 +29,48 @@ namespace RedeSocial.Apresentacao.Controllers
         {
             if (ModelState.IsValid)
             {
-                var identityUser = await _userManager.GetUserAsync(User);
+                var userId = await GetUserIdentityAsync();
 
                 var amigosModel = new AmigosModel
                 {
-                    UserId1 = user,
-                    UserId2 = identityUser.Id,
+                    UserIdSolicitado = user,
+                    UserIdSolicitante = userId,
                     StatusAmizade = 1,
                     DataInicioAmizade = DateTime.Now
                 };
 
                 await _amigosServices.CreateAsync(amigosModel);
 
-                return RedirectToAction(nameof(Perfil));
+                return RedirectToAction("Perfil","Usuario", new { userPerfil = user});
             }
-            return View();
+            return RedirectToAction("Perfil", "Usuario");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update([Bind("id")] int id)
+        {
+            if (ModelState.IsValid)
+            {
+                var amigoModel = await _amigosServices.GetByIdAsync(id);
+                amigoModel.StatusAmizade = 2;
+
+                await _amigosServices.UpdateAsync(amigoModel);
+
+                return RedirectToAction("Index","Home");
+            }
+            return RedirectToAction("Index", "Home");
         }
 
 
         // POST: Amigos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed([Bind("id")] int id)
         {
-
-            return RedirectToAction(nameof(Perfil));
+            await _amigosServices.DeleteAsync(id);
+            return RedirectToAction("Index", "Home");
         }
 
-        public async Task<PostViewModel> ConverterIdToNameAndModelToViewModel(PostModel postModel)
-        {
-            var usuario = await _usuarioServices.GetByIdAsync(postModel.IdentityUser);
-
-            var nomeUsuario = usuario.Nome + " " + usuario.Sobrenome;
-
-            (var tempo, var formatoDeTempo) = DefinirTempoPostagem(postModel.DataPostagem);
-
-            var postViewModel = new PostViewModel
-            {
-                Id = postModel.Id,
-                NomeCompleto = nomeUsuario,
-                Privacidade = postModel.Privacidade,
-                Texto = postModel.Texto,
-                UriImage = postModel.UriImage,
-                TempoDaPostagem = tempo,
-                FormatacaoTempo = formatoDeTempo,
-                IdentityUser = postModel.IdentityUser,
-                FotoPerfil = usuario.FotoPerfil
-            };
-
-            return postViewModel;
-        }
-
-        private static (int, string) DefinirTempoPostagem(DateTime dataPostagem)
-        {
-
-            var tempoDaPostagem = DateTime.Now - dataPostagem;
-
-            var tempo = (int)tempoDaPostagem.TotalMinutes;
-
-            var formatoDeTempo = "min";
-
-            if (tempo >= 60 && tempo < 1440)
-            {
-                //hora
-                tempo /= 60;
-                formatoDeTempo = "Horas";
-            }
-            else if (tempo >= 1440 && tempo < 43800)
-            {
-                //dia
-                tempo /= 1440;
-                formatoDeTempo = "Dias";
-            }
-            else if (tempo >= 43800 && tempo < 525600)
-            {
-                //mes
-                tempo /= 43800;
-                formatoDeTempo = "Meses";
-            }
-            else if (tempo > 525600)
-            {
-                //ano
-                tempo /= 525600;
-                formatoDeTempo = "Anos";
-            }
-
-            return (tempo, formatoDeTempo);
-        }
     }
 }

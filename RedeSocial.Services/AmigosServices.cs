@@ -23,6 +23,7 @@ namespace RedeSocial.Services
 
         public async Task UpdateAsync(AmigosModel amigosModel)
         {
+
             await _amigosRepository.UpdateAsync(amigosModel);
         }
 
@@ -36,14 +37,24 @@ namespace RedeSocial.Services
             return await _amigosRepository.GetAllAsync();
         }
 
-        public async Task<AmigosModel> GetByIdAsync(string userLogado, string perfilAcessado)
+        public async Task<AmigosModel> GetByUserAsync(string userLogado, string perfilAcessado)
         {
-            return await _amigosRepository.GetByIdAsync(userLogado, perfilAcessado);
+            return await _amigosRepository.GetByUsersAsync(userLogado, perfilAcessado);
+        }
+
+        public async Task<AmigosModel> GetByIdAsync(int id)
+        {
+            return await _amigosRepository.GetByIdAsync(id);
         }
 
         public async Task<IEnumerable<AmigosModel>> GetSolicitacoesPendentes(string userLogado)
         {
             return await _amigosRepository.GetSolicitacoesPendentes(userLogado);
+        }
+
+        public async Task<IEnumerable<AmigosModel>> GetListByUserAsync(string userLogado)
+        {
+            return await _amigosRepository.GetListByUserAsync(userLogado);
         }
     }
 }

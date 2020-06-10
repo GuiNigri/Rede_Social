@@ -44,7 +44,14 @@ namespace RedeSocial.Apresentacao.HttpServices
 
         public async Task UpdateAsync(AmigosModel amigosModel)
         {
-            throw new NotImplementedException();
+            var pathWithId = $"{_projetoHttpOptions.CurrentValue.AmigosPath}/{amigosModel.Id}";
+            var httpContent = new StringContent(JsonConvert.SerializeObject(amigosModel), Encoding.UTF8, "application/json");
+            var httpResponseMessage = await _httpClient.PutAsync(pathWithId, httpContent);
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+
+            }
         }
 
         public async Task DeleteAsync(int id)
@@ -66,16 +73,38 @@ namespace RedeSocial.Apresentacao.HttpServices
             return JsonConvert.DeserializeObject<IEnumerable<AmigosModel>>(result);
         }
 
-        public async Task<AmigosModel> GetByIdAsync(string userLogado, string perfilAcessado)
+        public async Task<AmigosModel> GetByUserAsync(string userLogado, string perfilAcessado)
         {
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.AmigosPath}/{userLogado}/{perfilAcessado}";
             var result = await _httpClient.GetStringAsync(pathWithId);
             return JsonConvert.DeserializeObject<AmigosModel>(result);
         }
 
+        public async Task<AmigosModel> GetByIdAsync(int id)
+        {
+            var pathWithId = $"{_projetoHttpOptions.CurrentValue.AmigosPath}/{id}";
+            var result = await _httpClient.GetStringAsync(pathWithId);
+            return JsonConvert.DeserializeObject<AmigosModel>(result);
+        }
+
         public async Task<IEnumerable<AmigosModel>> GetSolicitacoesPendentes(string userLogado)
         {
-            var pathWithId = $"{_projetoHttpOptions.CurrentValue.AmigosPath}/{userLogado}";
+            try
+            {
+                var pathWithId = $"{_projetoHttpOptions.CurrentValue.AmigosPath}/pendentes/{userLogado}";
+                var result = await _httpClient.GetStringAsync(pathWithId);
+                return JsonConvert.DeserializeObject<IEnumerable<AmigosModel>>(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<IEnumerable<AmigosModel>> GetListByUserAsync(string userLogado)
+        {
+            var pathWithId = $"{_projetoHttpOptions.CurrentValue.AmigosPath}/usuario/{userLogado}";
             var result = await _httpClient.GetStringAsync(pathWithId);
             return JsonConvert.DeserializeObject<IEnumerable<AmigosModel>>(result);
         }

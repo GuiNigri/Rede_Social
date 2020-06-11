@@ -47,15 +47,23 @@ namespace RedeSocial.Apresentacao.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var statusAmizade = 0;
+            var idAmizade = 0;
 
             var usuarioPerfil = await GetUsuarioModelAsync(userPerfil);
 
             var(postList,usuarioLogado,amigosList) = await HomeIndexAndUsuarioPerfilBase(userPerfil, userIdLogado);
 
-            var amigosModel = await _amigosServices.GetByUserAsync(usuarioLogado.IdentityUser, userPerfil);
+            var amigosModel = await _amigosServices.GetByUsersAsync(usuarioLogado.IdentityUser, userPerfil);
 
-            statusAmizade = amigosModel?.StatusAmizade ?? 0;
+            var amigosModelPerfil = await _amigosServices.GetListByUserAsync(usuarioPerfil.IdentityUser);
+
+            if (amigosModel != null)
+            {
+                statusAmizade = amigosModel.StatusAmizade;
+                idAmizade = amigosModel.Id;
+            }
 
             var perfilViewModel = new PerfilViewModel
             {
@@ -65,7 +73,10 @@ namespace RedeSocial.Apresentacao.Controllers
                 FotoPerfil = usuarioPerfil.FotoPerfil,
                 ListaPost = postList,
                 StatusAmizade = statusAmizade,
-                Amigos = amigosList
+                Amigos = amigosList,
+                IdAmizade = idAmizade,
+                AmigosPerfilCount = amigosModelPerfil.Count()
+                
             };
 
 
@@ -111,9 +122,9 @@ namespace RedeSocial.Apresentacao.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string userId)
         {
-            var usuarioModel = await GetUsuarioModelAsync(id);
+            var usuarioModel = await GetUsuarioModelAsync(userId);
 
             var usuarioEditViewModel = ConvertModelToEditViewModel(usuarioModel);
 
@@ -123,9 +134,9 @@ namespace RedeSocial.Apresentacao.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Nome,Sobrenome,Cpf,FotoPerfil,DataNascimento,IdentityUser")] UsuarioEditViewModel usuarioEditViewModel, IFormFile ImageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Sobrenome,Cpf,FotoPerfil,DataNascimento,IdentityUser")] UsuarioEditViewModel usuarioEditViewModel, IFormFile ImageFile)
         {
-            if (id != usuarioEditViewModel.IdentityUser)
+            if (id <=0 )
             {
                 return NotFound();
             }
@@ -187,7 +198,8 @@ namespace RedeSocial.Apresentacao.Controllers
                 DataNascimento = usuarioModel.DataNascimento,
                 Nome = usuarioModel.Nome,
                 Sobrenome = usuarioModel.Sobrenome,
-                FotoPerfil = usuarioModel.FotoPerfil
+                FotoPerfil = usuarioModel.FotoPerfil,
+                Id = usuarioModel.Id
           
             };
 
@@ -218,7 +230,8 @@ namespace RedeSocial.Apresentacao.Controllers
                 DataNascimento = usuarioEditViewModel.DataNascimento,
                 Nome = usuarioEditViewModel.Nome,
                 Sobrenome = usuarioEditViewModel.Sobrenome,
-                FotoPerfil = usuarioEditViewModel.FotoPerfil
+                FotoPerfil = usuarioEditViewModel.FotoPerfil,
+                Id = usuarioEditViewModel.Id
           
             };
 

@@ -1,25 +1,23 @@
 ﻿using RedeSocial.Model.Entity;
 using RedeSocial.Model.Interfaces.Blob;
 using RedeSocial.Model.Interfaces.Repositories;
-using RedeSocial.Model.Interfaces.Services;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Services
 {
-    public class PostServices : IPostServices
+    public class PostServices : BaseServices<PostModel>, IPostRepository, IPostServices
     {
         private readonly IPostRepository _postRepository;
         private readonly IBlobServices _blobServices;
 
-        public PostServices(IPostRepository postRepository, IBlobServices blobServices)
+        public PostServices(IPostRepository postRepository, IBlobServices blobServices):base(postRepository)
         {
             _postRepository = postRepository;
             _blobServices = blobServices;
         }
-        public async Task CreateAsync(PostModel postModel)
+        public override async Task CreateAsync(PostModel postModel)
         {
             if(postModel.UriImage != null)
             {
@@ -28,7 +26,7 @@ namespace RedeSocial.Services
                 postModel.UriImage = blob;
             }
 
-           await _postRepository.CreateAsync(postModel);
+            await _postRepository.CreateAsync(postModel);
         }
 
         public async Task DeleteAsync(int id, string uri)
@@ -39,16 +37,6 @@ namespace RedeSocial.Services
             }
 
             await _postRepository.DeleteAsync(id);
-        }
-
-        public async Task<PostModel> GetByidAsync(int id)
-        {
-            return await _postRepository.GeByidAsync(id);
-        }
-
-        public async Task<IEnumerable<PostModel>> GetAllAsync()
-        {
-            return await _postRepository.GetAllAsync();
         }
 
         public async Task<IEnumerable<PostModel>> GetPostsByUserAsync(string id)

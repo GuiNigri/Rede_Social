@@ -6,14 +6,9 @@ using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Model.Interfaces.Repositories
 {
-    public interface IAmigosRepository
+    public interface IAmigosRepository:IBaseRepository<AmigosModel>
     {
-        Task CreateAsync(AmigosModel amigosModel);
-        Task UpdateAsync(AmigosModel amigosModel);
-        Task DeleteAsync(int id);
-        Task<IEnumerable<AmigosModel>> GetAllAsync();
         Task<AmigosModel> GetByUsersAsync(string userLogado, string perfilAcessado);
-        Task<AmigosModel> GetByIdAsync(int id);
         Task<IEnumerable<AmigosModel>> GetSolicitacoesPendentes(string userLogado);
         Task<IEnumerable<AmigosModel>> GetListByUserAsync(string userLogado);
     }

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Model.Interfaces.Repositories
 {
-    public interface IUsuarioRepository
+    public interface IUsuarioRepository:IBaseRepository<UsuarioModel>
     {
-        Task CreateAsync(UsuarioModel usuarioModel);
-        Task UpdateAsync(UsuarioModel usuarioModel);
-        Task DeleteAsync(string id);
-        Task<IEnumerable<UsuarioModel>> GetAllAsync();
         Task<UsuarioModel> GetByIdAsync(string id);
+        Task DeleteAsync(string id);
     }
 }

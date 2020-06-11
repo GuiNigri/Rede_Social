@@ -89,7 +89,7 @@ namespace RedeSocial.Aplicacao.Controllers
             {
                 return NotFound();
             }
-            var amigosModel = await _amigosServices.GetByUserAsync(userLogado, perfilAcessado);
+            var amigosModel = await _amigosServices.GetByUsersAsync(userLogado, perfilAcessado);
 
 
             return amigosModel;

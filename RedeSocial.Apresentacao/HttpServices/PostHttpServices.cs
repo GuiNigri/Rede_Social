@@ -53,6 +53,11 @@ namespace RedeSocial.Apresentacao.HttpServices
             }
         }
 
+        public Task DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<PostModel>> GetAllAsync()
         {
             var path = $"{_projetoHttpOptions.CurrentValue.PostPath}";
@@ -60,7 +65,7 @@ namespace RedeSocial.Apresentacao.HttpServices
             return JsonConvert.DeserializeObject<IEnumerable<PostModel>>(result);
         }
 
-        public async Task<PostModel> GetByidAsync(int id)
+        public async Task<PostModel> GetByIdAsync(int id)
         {
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.PostPath}/ById/{id}";
             var result = await _httpClient.GetStringAsync(pathWithId);
@@ -72,6 +77,11 @@ namespace RedeSocial.Apresentacao.HttpServices
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.PostPath}/{id}";
             var result = await _httpClient.GetStringAsync(pathWithId);
             return JsonConvert.DeserializeObject<IEnumerable<PostModel>>(result);
+        }
+
+        public Task UpdateAsync(PostModel model)
+        {
+            throw new NotImplementedException();
         }
     }
 }

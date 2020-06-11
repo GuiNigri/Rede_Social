@@ -20,8 +20,7 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager, 
-            UsuarioController usuarioController)
+            SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -58,7 +57,7 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
 
-            return RedirectToRoute("Default", new { controller = "Usuario", action = "Edit", id = user.Id });
+            return RedirectToRoute("Default", new { controller = "Usuario", action = "Edit", userId = user.Id });
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");

@@ -90,7 +90,22 @@ namespace RedeSocial.Apresentacao.HttpServices
             return JsonConvert.DeserializeObject<UsuarioModel>(result);
         }
 
-        public async Task<bool> GetByCpfAsync(long cpf)
+        public Task CreateAsync(UsuarioModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(UsuarioModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UsuarioModel> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

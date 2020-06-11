@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace RedeSocial.Model.Entity
 {
-    public class UsuarioModel
+    public class UsuarioModel:BaseModel
     {
+
         public string Nome { get; set; }
 
         public string Sobrenome { get; set; }
@@ -18,7 +19,7 @@ namespace RedeSocial.Model.Entity
         public DateTime DataNascimento { get; set; }
         public string FotoPerfil { get; set; }
 
-        [Key]
+        
         public string IdentityUser { get; set; }
     }
 

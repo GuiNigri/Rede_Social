@@ -11,38 +11,13 @@ using RedeSocial.Model.Interfaces.Repositories;
 
 namespace RedeSocial.Data
 {
-    public class AmigosRepository:IAmigosRepository
+    public class AmigosRepository:BaseRepository<AmigosModel>, IAmigosRepository
     {
         private readonly RedeSocialContext _context;
 
-        public AmigosRepository(RedeSocialContext context)
+        public AmigosRepository(RedeSocialContext context):base(context)
         {
             _context = context;
-        }
-
-        public async Task CreateAsync(AmigosModel amigosModel)
-        {
-            await _context.AddAsync(amigosModel);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(AmigosModel amigosModel)
-        {
-            _context.Update(amigosModel);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            var amigosModel = await _context.AmigosModel.FindAsync(id);
-
-            _context.AmigosModel.Remove(amigosModel);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<AmigosModel>> GetAllAsync()
-        {
-            return await _context.AmigosModel.ToListAsync();
         }
 
         public async Task<AmigosModel> GetByUsersAsync(string userLogado, string perfilAcessado)
@@ -81,11 +56,6 @@ namespace RedeSocial.Data
             return await _context.AmigosModel.Where(x =>
                     x.UserIdSolicitado == userLogado && x.StatusAmizade == 1)
                 .ToListAsync();
-        }
-
-        public async Task<AmigosModel> GetByIdAsync(int id)
-        {
-            return await _context.AmigosModel.FindAsync(id);
         }
     }
 }

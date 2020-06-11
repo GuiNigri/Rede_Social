@@ -3,15 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using RedeSocial.Model.Interfaces.Repositories;
 
 namespace RedeSocial.Model.Interfaces.Services
 {
-    public interface IPostServices
+    public interface IPostServices : IBaseServices<PostModel>, IPostRepository
     {
-        Task<IEnumerable<PostModel>> GetAllAsync();
-        Task<IEnumerable<PostModel>> GetPostsByUserAsync(string id);
-        Task<PostModel> GetByidAsync(int id);
-        Task CreateAsync(PostModel postModel);
         Task DeleteAsync(int id, string uri);
     }
 }

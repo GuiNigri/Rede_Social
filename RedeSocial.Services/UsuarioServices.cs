@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using RedeSocial.Model.Entity;
 using RedeSocial.Model.Interfaces.Blob;
 using RedeSocial.Model.Interfaces.Repositories;
@@ -9,13 +6,13 @@ using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Services
 {
-    public class UsuarioServices:IUsuarioServices
+    public class UsuarioServices:BaseServices<UsuarioModel>, IUsuarioServices
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IBlobServices _blobServices;
         private readonly IPostServices _postServices;
 
-        public UsuarioServices(IUsuarioRepository usuarioRepository, IBlobServices blobServices, IPostServices postServices)
+        public UsuarioServices(IUsuarioRepository usuarioRepository, IBlobServices blobServices, IPostServices postServices):base(usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
             _blobServices = blobServices;
@@ -65,11 +62,6 @@ namespace RedeSocial.Services
             await _blobServices.DeleteBlobAsync(user.FotoPerfil);
 
             await _usuarioRepository.DeleteAsync(id);
-        }
-
-        public async Task<IEnumerable<UsuarioModel>> GetAllAsync()
-        {
-            return await _usuarioRepository.GetAllAsync();
         }
 
         public async Task<UsuarioModel> GetByIdAsync(string id)

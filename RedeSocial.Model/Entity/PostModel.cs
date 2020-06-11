@@ -7,10 +7,8 @@ using System.Text;
 
 namespace RedeSocial.Model.Entity
 {
-    public class PostModel
+    public class PostModel:BaseModel
     {
-        [Key]
-        public int Id { get; set; }
         public string IdentityUser { get; set; }
         public string Texto { get; set; }
         public string UriImage { get; set; }
@@ -18,19 +16,15 @@ namespace RedeSocial.Model.Entity
         public DateTime DataPostagem { get; set; }
     }
 
-    public class CommentPostModel
+    public class CommentPostModel : BaseModel
     {
-        [Key]
-        public int Id { get; set; }
         public string IdentityUser { get; set; }
         public PostModel IdPostModel { get; set; }
         public string Comment { get; set; }
     }
 
-    public class LikesPostModel
+    public class LikesPostModel : BaseModel
     {
-        [Key]
-        public int Id { get; set; }
         public string IdentityUser { get; set; }
         public PostModel IdPostModel { get; set; }
         public int MyProperty { get; set; }

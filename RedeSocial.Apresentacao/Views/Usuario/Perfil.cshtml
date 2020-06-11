@@ -29,7 +29,7 @@
                                     <button class="btn btn-success" disabled>Amigos <i class="fa fa-check-circle"></i></button>
                                 </div>
                                 <div class="col-md-8">
-                                    <form asp-controller="Amigos" asp-action="Delete" asp-route-user="@Model.IdentityUserPerfil" method="post">
+                                    <form asp-controller="Amigos" asp-action="Delete" asp-route-id="@Model.IdAmizade" method="post">
                                         <button class="btn btn-danger">Desfazer Amizade <i class="fa fa-user-times"></i></button>
                                     </form>
                                 </div>
@@ -38,7 +38,7 @@
                                 </li>
                     <li class="list-group-item">
                         <div class="h6 text-muted">Amigos</div>
-                        <div class="h5">52342</div>
+                        <div class="h5">@Model.AmigosPerfilCount</div>
                     </li>
 
                 </ul>

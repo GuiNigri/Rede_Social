@@ -73,7 +73,7 @@ namespace RedeSocial.Aplicacao.Controllers
             {
                 return NotFound();
             }
-            var post = await _postServices.GetByidAsync(id);
+            var post = await _postServices.GetByIdAsync(id);
 
             if(post == null)
             {
@@ -91,7 +91,7 @@ namespace RedeSocial.Aplicacao.Controllers
                 return NotFound();
             }
 
-            var post = await _postServices.GetByidAsync(id);
+            var post = await _postServices.GetByIdAsync(id);
 
             if(post == null)
             {

@@ -73,7 +73,7 @@ namespace RedeSocial.Apresentacao.HttpServices
             return JsonConvert.DeserializeObject<IEnumerable<AmigosModel>>(result);
         }
 
-        public async Task<AmigosModel> GetByUserAsync(string userLogado, string perfilAcessado)
+        public async Task<AmigosModel> GetByUsersAsync(string userLogado, string perfilAcessado)
         {
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.AmigosPath}/{userLogado}/{perfilAcessado}";
             var result = await _httpClient.GetStringAsync(pathWithId);

@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace RedeSocial.Model.Interfaces.Repositories
 {
-    public interface IPostRepository
+    public interface IPostRepository:IBaseRepository<PostModel>
     {
-        Task<IEnumerable<PostModel>> GetAllAsync();
         Task<IEnumerable<PostModel>> GetPostsByUserAsync(string id);
-        Task<PostModel> GeByidAsync(int id);
-        Task CreateAsync(PostModel postModel);
-        Task DeleteAsync(int id);
     }
 }

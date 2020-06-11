@@ -56,7 +56,7 @@ namespace RedeSocial.Apresentacao.Controllers
             {
                 var userId = await GetUserIdentityAsync();
 
-                var postModel = await _postServices.GetByidAsync(id);
+                var postModel = await _postServices.GetByIdAsync(id);
 
                 if (userId == postModel.IdentityUser)
                 {

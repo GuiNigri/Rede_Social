@@ -189,6 +189,20 @@ namespace RedeSocial.Apresentacao.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Search(string termoInputado)
+        {
+            var listaFiltrada = await _usuarioServices.GetFiltroAsync(termoInputado);
+
+            var usuarioDetailsViewModel = new UsuarioDetailsViewModel
+            {
+                listaUsuarios = listaFiltrada
+            };
+
+            return View("Details", usuarioDetailsViewModel);
+
+        }
+
         private static UsuarioEditViewModel ConvertModelToEditViewModel(UsuarioModel usuarioModel)
         {
             var usuarioEditViewModel = new UsuarioEditViewModel

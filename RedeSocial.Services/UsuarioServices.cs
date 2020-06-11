@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using RedeSocial.Model.Entity;
 using RedeSocial.Model.Interfaces.Blob;
 using RedeSocial.Model.Interfaces.Repositories;
@@ -62,6 +63,11 @@ namespace RedeSocial.Services
             await _blobServices.DeleteBlobAsync(user.FotoPerfil);
 
             await _usuarioRepository.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<UsuarioModel>> GetFiltroAsync(string termoInputado)
+        {
+            return await _usuarioRepository.GetFiltroAsync(termoInputado);
         }
 
         public async Task<UsuarioModel> GetByIdAsync(string id)

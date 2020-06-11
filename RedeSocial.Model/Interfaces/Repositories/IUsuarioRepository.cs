@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Model.Interfaces.Repositories
@@ -7,5 +8,6 @@ namespace RedeSocial.Model.Interfaces.Repositories
     {
         Task<UsuarioModel> GetByIdAsync(string id);
         Task DeleteAsync(string id);
+        Task<IEnumerable<UsuarioModel>> GetFiltroAsync(string termoInputado);
     }
 }

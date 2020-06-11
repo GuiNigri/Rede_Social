@@ -34,8 +34,8 @@
         <nav class="navbar navbar-light bg-white">
             <a asp-controller="Home" asp-action="Index" class="navbar-brand">Rede Social</a>
             <div class="header-search">
-                <form>
-                    <input class="input search-input" type="text" placeholder="Busca">
+                <form asp-controller="Usuario" asp-action="Search" method="get">
+                    <input class="input search-input" type="text" name="termoInputado" placeholder="Busca">
                     <button class="search-btn"><i class="fa fa-search"></i></button>
                 </form>
             </div>

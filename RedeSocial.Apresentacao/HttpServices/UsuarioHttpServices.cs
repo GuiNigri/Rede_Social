@@ -76,6 +76,13 @@ namespace RedeSocial.Apresentacao.HttpServices
             }
         }
 
+        public async Task<IEnumerable<UsuarioModel>> GetFiltroAsync(string termoInputado)
+        {
+            var pathWithId = $"{_projetoHttpOptions.CurrentValue.UsuarioPath}/search/{termoInputado}";
+            var result = await _httpClient.GetStringAsync(pathWithId);
+            return JsonConvert.DeserializeObject<IEnumerable<UsuarioModel>>(result);
+        }
+
         public async Task<IEnumerable<UsuarioModel>> GetAllAsync()
         {
             var path = $"{_projetoHttpOptions.CurrentValue.UsuarioPath}";

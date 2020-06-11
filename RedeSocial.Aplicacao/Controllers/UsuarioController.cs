@@ -51,6 +51,25 @@ namespace RedeSocial.Aplicacao.Controllers
             return usuarioModel;
         }
 
+        [HttpGet("search/{termoInputado}")]
+        public async Task<ActionResult<IEnumerable<UsuarioModel>>> GetSearchUsuario(string termoInputado)
+        {
+
+            if (termoInputado == null)
+            {
+                return NotFound();
+            }
+
+            var usuarioModel = await _usuarioServices.GetFiltroAsync(termoInputado);
+
+            if (usuarioModel == null)
+            {
+                return NotFound();
+            }
+
+            return usuarioModel.ToList();
+        }
+
         // PUT: api/Usuario/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

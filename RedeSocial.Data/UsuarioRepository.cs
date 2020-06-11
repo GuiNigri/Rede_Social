@@ -25,6 +25,11 @@ namespace RedeSocial.Data
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<UsuarioModel>> GetFiltroAsync(string termoInputado)
+        {
+            return await _context.UsuarioModel.Where(x => x.Nome.Contains(termoInputado) || x.Sobrenome.Contains(termoInputado)).ToListAsync();
+        }
+
 
         public async Task<UsuarioModel> GetByIdAsync(string id)
         {

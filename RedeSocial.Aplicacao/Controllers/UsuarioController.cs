@@ -26,9 +26,9 @@ namespace RedeSocial.Aplicacao.Controllers
 
         // GET: api/Usuario
         [HttpGet]
-        public async Task<IEnumerable<UsuarioModel>> GetUsuarioModel()
+        public async Task<ActionResult<IEnumerable<UsuarioModel>>> GetUsuarioModel()
         {
-            return await _usuarioServices.GetAllAsync();
+            return Ok(await _usuarioServices.GetAllAsync());
         }
 
         // GET: api/Usuario/5
@@ -111,9 +111,6 @@ namespace RedeSocial.Aplicacao.Controllers
         public async Task<ActionResult<UsuarioModel>> PostUsuarioModel([Bind("UsuarioModel, ImageBase64")] CreateAndUpdateHttpUsuarioModel createUsuarioModel)
         {
 
-            var usuarioModel = createUsuarioModel.UsuarioModel;
-            var imageBase64 = createUsuarioModel.ImageBase64;
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -121,6 +118,9 @@ namespace RedeSocial.Aplicacao.Controllers
 
             try
             {
+                var usuarioModel = createUsuarioModel.UsuarioModel;
+                var imageBase64 = createUsuarioModel.ImageBase64;
+
                 await _usuarioServices.CreateAsync(usuarioModel,imageBase64);
             }
             catch (ModelValidationExceptions e)
@@ -129,7 +129,7 @@ namespace RedeSocial.Aplicacao.Controllers
                 return BadRequest(ModelState);
             }
 
-            return base.Ok();
+            return Ok(createUsuarioModel);
         }
 
         // DELETE: api/Usuario/5
@@ -149,7 +149,7 @@ namespace RedeSocial.Aplicacao.Controllers
 
             await _usuarioServices.DeleteAsync(id);
 
-            return base.Ok();
+            return Ok(usuarioModel);
         }
 
     }

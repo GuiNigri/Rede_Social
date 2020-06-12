@@ -14,11 +14,12 @@ namespace RedeSocial.Apresentacao.Models.Posts
         public string FormatacaoTempo { get; set; }
         public string IdentityUser { get; set; }
         public string FotoPerfil { get; set; }
-
+        public int QuantLikes { get; set; }
+        public bool StatusLike { get; set; }
         public IEnumerable<CommentPostViewModel> CommentList { get; set; }
 
         public PostViewModel(PostModel postModel, UsuarioModel usuarioModel, int tempo,
-            string formato, IEnumerable<CommentPostViewModel> listaComment)
+            string formato, IEnumerable<CommentPostViewModel> listaComment, int quantLikes, bool statusLike)
         {
             Id = postModel.Id;
             NomeCompleto = usuarioModel.Nome + " " + usuarioModel.Sobrenome;
@@ -30,6 +31,8 @@ namespace RedeSocial.Apresentacao.Models.Posts
             IdentityUser = postModel.IdentityUser;
             FotoPerfil = usuarioModel.FotoPerfil;
             CommentList = listaComment;
+            QuantLikes = quantLikes;
+            StatusLike = statusLike;
         }
     }
 

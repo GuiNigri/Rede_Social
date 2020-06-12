@@ -16,8 +16,8 @@ namespace RedeSocial.Apresentacao.Controllers
     {
         private readonly IAmigosServices _amigosServices;
 
-        public HomeController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices)
-            : base(userManager, usuarioServices, postServices, commentPostServices, amigosServices)
+        public HomeController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices, ILikePostServices likePostServices)
+            : base(userManager, usuarioServices, postServices, commentPostServices, amigosServices, likePostServices)
         {
             _amigosServices = amigosServices;
         }

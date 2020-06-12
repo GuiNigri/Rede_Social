@@ -14,12 +14,14 @@ namespace RedeSocial.Apresentacao.Controllers
     {
         private readonly IPostServices _postServices;
         private readonly ICommentPostServices _commentPostServices;
+        private readonly ILikePostServices _likePostServices;
 
-        public PostController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices)
-            : base(userManager, usuarioServices, postServices, commentPostServices, amigosServices)
+        public PostController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices, ILikePostServices likePostServices)
+            : base(userManager, usuarioServices, postServices, commentPostServices, amigosServices, likePostServices)
         {
             _postServices = postServices;
             _commentPostServices = commentPostServices;
+            _likePostServices = likePostServices;
         }
 
         // POST: PostController/Create
@@ -125,6 +127,37 @@ namespace RedeSocial.Apresentacao.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Likes(int idPost)
+        {
+            try
+            {
+                var userId = await GetUserIdentityAsync();
+
+                var statusLikePostModel = await _likePostServices.GetStatusAsync(userId, idPost);
+                if (statusLikePostModel == null)
+                {
+                    var likePostModel = new LikePostModel
+                    {
+                        PostModelId = idPost,
+                        IdentityUser = userId
+                    };
+
+                    await _likePostServices.CreateAsync(likePostModel);
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+                await _likePostServices.DeleteAsync(idPost);
+
+                return RedirectToAction("Index", "Home");
+
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
 
     }
 }

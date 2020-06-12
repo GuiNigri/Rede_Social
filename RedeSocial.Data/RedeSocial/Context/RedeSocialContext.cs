@@ -14,6 +14,6 @@ namespace RedeSocial.Data.RedeSocial.Context
         public DbSet<PostModel> PostModel { get; set; }
         public DbSet<AmigosModel> AmigosModel { get; set; }
         public DbSet<CommentPostModel> CommentPostModel { get; set; }
-        public DbSet<LikesPostModel> LikesPostModel { get; set; }
+        public DbSet<LikePostModel> LikesPostModel { get; set; }
     }
 }

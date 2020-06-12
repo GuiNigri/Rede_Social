@@ -22,6 +22,7 @@ namespace RedeSocial.IoC
             services.AddScoped<IPostServices, PostServices>();
             services.AddScoped<IAmigosServices, AmigosServices>();
             services.AddScoped<ICommentPostServices, CommentPostServices>();
+            services.AddScoped<ILikePostServices, LikePostServices>();
 
             AddDbContextAndData(services,configuration);
             
@@ -39,6 +40,7 @@ namespace RedeSocial.IoC
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IAmigosRepository, AmigosRepository>();
             services.AddScoped<ICommentPostRepository, CommentPostRepository>();
+            services.AddScoped<ILikePostRepository, LikePostRepository>();
 
 
         }

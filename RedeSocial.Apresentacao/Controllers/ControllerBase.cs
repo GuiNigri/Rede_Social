@@ -22,14 +22,18 @@ namespace RedeSocial.Apresentacao.Controllers
         private readonly IPostServices _postServices;
         private readonly ICommentPostServices _commentPostServices;
         private readonly IAmigosServices _amigosServices;
+        private readonly ILikePostServices _likePostServices;
 
-        public ControllerBase(UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices, IAmigosServices amigosServices)
+        public ControllerBase(UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices,
+            IPostServices postServices, ICommentPostServices commentPostServices, 
+            IAmigosServices amigosServices, ILikePostServices likePostServices)
         {
             _userManager = userManager;
             _usuarioServices = usuarioServices;
             _postServices = postServices;
             _commentPostServices = commentPostServices;
             _amigosServices = amigosServices;
+            _likePostServices = likePostServices;
         }
 
 
@@ -46,6 +50,7 @@ namespace RedeSocial.Apresentacao.Controllers
 
         public async Task<List<PostViewModel>> GetPostsAsync(string userId)
         {
+            var userLogado = await GetUserIdentityAsync();
             IEnumerable<PostModel> posts;
 
             var postLista = new List<PostViewModel>();
@@ -62,7 +67,24 @@ namespace RedeSocial.Apresentacao.Controllers
 
             foreach (var post in posts)
             {
-                var postViewModel = await ConverterIdToNameAndModelToViewModel(post);
+                var statusLikes = false;
+
+                var usuario = await GetUsuarioModelAsync(post.IdentityUser);
+
+                var likesList = await _likePostServices.GetPostByIdAsync(post.Id);
+
+                var likePostModel = await _likePostServices.GetStatusAsync(userLogado, post.Id);
+
+                if (likePostModel != null)
+                {
+                    statusLikes = true;
+                }
+                var listaComentarios = await GetListCommentByIdPost(post.Id);
+
+                var (tempo, formatoDeTempo) = DefinirTempoPostagem(post.DataPostagem);
+
+                var postViewModel = new PostViewModel(post, usuario, tempo, formatoDeTempo,
+                    listaComentarios, likesList.Count(), statusLikes);
 
                 postLista.Add(postViewModel);
             }
@@ -70,16 +92,6 @@ namespace RedeSocial.Apresentacao.Controllers
             return postLista;
         }
 
-        private async Task<PostViewModel> ConverterIdToNameAndModelToViewModel(PostModel postModel)
-        {
-            var usuario = await GetUsuarioModelAsync(postModel.IdentityUser);
-
-            var listaComentarios = await GetListCommentByIdPost(postModel.Id);
-
-           var ( tempo, formatoDeTempo) = DefinirTempoPostagem(postModel.DataPostagem);
-
-            return new PostViewModel(postModel, usuario, tempo, formatoDeTempo, listaComentarios);
-        }
         public async Task<AmigosViewModel> ConverterIdToNameAndModelToViewModel(AmigosModel amigosModel)
         {
             UsuarioModel usuario;
@@ -180,7 +192,7 @@ namespace RedeSocial.Apresentacao.Controllers
             return (posts, usuarioLogado, listaDeAmigos);
         }
 
-        public async Task<IEnumerable<CommentPostViewModel>> GetListCommentByIdPost(int idPost)
+        private async Task<IEnumerable<CommentPostViewModel>> GetListCommentByIdPost(int idPost)
         {
             var commentList = new List<CommentPostViewModel>();
             var listaComentarios = await _commentPostServices.GetPostByIdAsync(idPost);

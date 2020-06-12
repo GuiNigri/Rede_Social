@@ -20,8 +20,9 @@ namespace RedeSocial.Apresentacao.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IAmigosServices _amigosServices;
 
-        public UsuarioController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices)
-            : base(userManager, usuarioServices, postServices, commentPostServices, amigosServices)
+        public UsuarioController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices,
+            ICommentPostServices commentPostServices, ILikePostServices likePostServices)
+            : base(userManager, usuarioServices, postServices, commentPostServices, amigosServices, likePostServices)
         {
             _usuarioServices = usuarioServices;
             _userManager = userManager;

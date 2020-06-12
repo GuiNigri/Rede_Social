@@ -11,6 +11,7 @@ namespace RedeSocial.Model.Options
         public string PostPath { get; set; }
         public string AmigosPath { get; set; }
         public string CommentPostPath { get; set; }
+        public string LikePostPath { get; set; }
         public string Name { get; set; }
         public int Timeout { get; set; }
     }

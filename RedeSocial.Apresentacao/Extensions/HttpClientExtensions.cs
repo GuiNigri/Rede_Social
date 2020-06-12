@@ -23,6 +23,7 @@ namespace RedeSocial.Apresentacao.Extensions
             services.AddTransient<IPostServices, PostHttpServices>();
             services.AddTransient<IAmigosServices, AmigosHttpServices>();
             services.AddTransient<ICommentPostServices, CommentPostHttpServices>();
+            services.AddTransient<ILikePostServices, LikePostHttpServices>();
         }
 
     }

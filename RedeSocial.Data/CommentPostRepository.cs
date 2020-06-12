@@ -16,7 +16,7 @@ namespace RedeSocial.Data
         {
         }
 
-        public new async Task<IEnumerable<CommentPostModel>> GetPostByIdAsync(int id)
+        public async Task<IEnumerable<CommentPostModel>> GetPostByIdAsync(int id)
         {
            return await _dbSet.Where(x => x.PostModelId == id).ToListAsync();
         }

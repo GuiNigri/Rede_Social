@@ -42,10 +42,25 @@
                 <img src="@post.UriImage" width="100%" />
             </div>}
 
-        <div class="card-footer" style="border-bottom: 1px solid rgba(0, 0, 0, .125);">
-            <a href="#" class="card-link"><i class="fa fa-gittip"></i> Like</a>
-            <a href="#!" class="card-link" onclick="EscondeElemento('caption @post.Id')"><i class="fa fa-comment"></i> Comentario</a>
+    <div class="card-footer" style="border-bottom: 1px solid rgba(0, 0, 0, .125);">
+        @{
+
+            if ((post.StatusLike))
+            {
+                <a style="color: crimson" asp-controller="Post" asp-action="Likes" asp-route-idPost="@post.Id" class="card-link"><i class="fa fa-gittip"></i> Like</a>
+            }
+            else
+            {
+                <a asp-controller="Post" asp-action="Likes" asp-route-idPost="@post.Id" class="card-link"><i class="fa fa-gittip"></i> Like</a>
+            }
+            
+        }
+
+        <a href="#!" class="card-link" onclick="EscondeElemento('caption @post.Id')"><i class="fa fa-comment"></i> Comentario</a>
+        <div class="pull-right">
+            <a style="color: crimson;" class="card-link"><i class="fa fa-gittip"></i> @post.QuantLikes</a>
         </div>
+    </div>
         <div id="caption @post.Id" style="display: none;">
             @foreach (var comentario in post.CommentList)
             {

@@ -25,8 +25,4 @@
     <ProjectReference Include="..\RedeSocial.Model\RedeSocial.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Amigos\" />
-  </ItemGroup>
-
 </Project>

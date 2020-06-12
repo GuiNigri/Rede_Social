@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RedeSocial.Apresentacao.Models;
+using RedeSocial.Apresentacao.Models.Amigos;
+using RedeSocial.Apresentacao.Models.Home;
 using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Apresentacao.Controllers
@@ -23,21 +25,12 @@ namespace RedeSocial.Apresentacao.Controllers
         public async Task<IActionResult> Index()
         {
             var solicitacoes = await GetSolicitacoesAmizade();
+
             var userId = await GetUserIdentityAsync();
 
             var (postList, usuarioLogado, amigosList) = await HomeIndexAndUsuarioPerfilBase(null, userId);
 
-            var homeViewModel = new HomeViewModel
-            {
-                IdentityUserLogado = userId,
-                NomePerfil = usuarioLogado.Nome + " " + usuarioLogado.Sobrenome,
-                FotoPerfil = usuarioLogado.FotoPerfil,
-                PostList = postList,
-                SolicitacoesPendentes = solicitacoes,
-                Amigos = amigosList
-            };
-
-            return View(homeViewModel);
+            return View(new HomeViewModel(userId, usuarioLogado, postList,solicitacoes,amigosList));
         }
 
 

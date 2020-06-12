@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using RedeSocial.Model.Entity;
 
-namespace RedeSocial.Apresentacao.Models
+namespace RedeSocial.Apresentacao.Models.Usuarios
 {
     public class UsuarioEditViewModel
     {
@@ -20,5 +18,16 @@ namespace RedeSocial.Apresentacao.Models
         [DataType(DataType.Date)]
         public DateTime DataNascimento { get; set; }
         public string IdentityUser { get; set; }
+
+        public UsuarioEditViewModel(UsuarioModel usuarioModel)
+        {
+            IdentityUser = usuarioModel.IdentityUser;
+            Cpf = usuarioModel.Cpf;
+            DataNascimento = usuarioModel.DataNascimento;
+            Nome = usuarioModel.Nome;
+            Sobrenome = usuarioModel.Sobrenome;
+            FotoPerfil = usuarioModel.FotoPerfil;
+            Id = usuarioModel.Id;
+        }
     }
 }

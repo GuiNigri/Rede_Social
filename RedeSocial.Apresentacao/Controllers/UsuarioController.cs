@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RedeSocial.Apresentacao.Models;
+using RedeSocial.Apresentacao.Models.Usuarios;
 using RedeSocial.Model.Entity;
 using RedeSocial.Model.Exceptions;
 using RedeSocial.Model.Interfaces.Services;
@@ -66,22 +64,9 @@ namespace RedeSocial.Apresentacao.Controllers
                 idAmizade = amigosModel.Id;
             }
 
-            var perfilViewModel = new PerfilViewModel
-            {
-                IdentityUserLogado = userIdLogado,
-                IdentityUserPerfil = usuarioPerfil.IdentityUser,
-                NomePerfil = usuarioPerfil.Nome + " " + usuarioPerfil.Sobrenome,
-                FotoPerfil = usuarioPerfil.FotoPerfil,
-                PostList = postList,
-                StatusAmizade = statusAmizade,
-                Amigos = amigosList,
-                IdAmizade = idAmizade,
-                AmigosPerfilCount = amigosModelPerfil.Count()
-                
-            };
 
-
-            return View("Perfil", perfilViewModel);
+            return View("Perfil", new PerfilViewModel
+                (userIdLogado,usuarioPerfil,postList,statusAmizade,amigosList,idAmizade,amigosModelPerfil.Count()));
         }
 
         [AllowAnonymous]
@@ -127,9 +112,7 @@ namespace RedeSocial.Apresentacao.Controllers
         {
             var usuarioModel = await GetUsuarioModelAsync(userId);
 
-            var usuarioEditViewModel = ConvertModelToEditViewModel(usuarioModel);
-
-            return View(usuarioEditViewModel);
+            return View(new UsuarioEditViewModel(usuarioModel));
 
         }
 
@@ -202,23 +185,6 @@ namespace RedeSocial.Apresentacao.Controllers
 
             return View("Details", usuarioDetailsViewModel);
 
-        }
-
-        private static UsuarioEditViewModel ConvertModelToEditViewModel(UsuarioModel usuarioModel)
-        {
-            var usuarioEditViewModel = new UsuarioEditViewModel
-            {
-                IdentityUser = usuarioModel.IdentityUser,
-                Cpf = usuarioModel.Cpf,
-                DataNascimento = usuarioModel.DataNascimento,
-                Nome = usuarioModel.Nome,
-                Sobrenome = usuarioModel.Sobrenome,
-                FotoPerfil = usuarioModel.FotoPerfil,
-                Id = usuarioModel.Id
-          
-            };
-
-            return usuarioEditViewModel;
         }
 
         private static UsuarioModel ConvertViewModelToModel(UsuarioCreateViewModel usuarioCreateViewModel)

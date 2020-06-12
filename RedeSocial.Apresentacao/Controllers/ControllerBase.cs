@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RedeSocial.Apresentacao.Models;
+using RedeSocial.Apresentacao.Models.Amigos;
+using RedeSocial.Apresentacao.Models.Posts;
 using RedeSocial.Model.Interfaces.Services;
 using RedeSocial.Model.Entity;
 
@@ -72,32 +74,17 @@ namespace RedeSocial.Apresentacao.Controllers
         {
             var usuario = await GetUsuarioModelAsync(postModel.IdentityUser);
 
-            var nomeUsuario = usuario.Nome + " " + usuario.Sobrenome;
-
             var listaComentarios = await GetListCommentByIdPost(postModel.Id);
 
-            (var tempo, var formatoDeTempo) = DefinirTempoPostagem(postModel.DataPostagem);
+           var ( tempo, formatoDeTempo) = DefinirTempoPostagem(postModel.DataPostagem);
 
-            var postViewModel = new PostViewModel
-            {
-                Id = postModel.Id,
-                NomeCompleto = nomeUsuario,
-                Privacidade = postModel.Privacidade,
-                Texto = postModel.Texto,
-                UriImage = postModel.UriImage,
-                TempoDaPostagem = tempo,
-                FormatacaoTempo = formatoDeTempo,
-                IdentityUser = postModel.IdentityUser,
-                FotoPerfil = usuario.FotoPerfil,
-                CommentList = listaComentarios
-            };
-
-            return postViewModel;
+            return new PostViewModel(postModel, usuario, tempo, formatoDeTempo, listaComentarios);
         }
         public async Task<AmigosViewModel> ConverterIdToNameAndModelToViewModel(AmigosModel amigosModel)
         {
             UsuarioModel usuario;
             var userId = await GetUserIdentityAsync();
+
             if (userId == amigosModel.UserIdSolicitado)
             {
                 usuario = await GetUsuarioModelAsync(amigosModel.UserIdSolicitante);
@@ -106,19 +93,8 @@ namespace RedeSocial.Apresentacao.Controllers
             {
                 usuario = await GetUsuarioModelAsync(amigosModel.UserIdSolicitado);
             }
-            
 
-            var nomeUsuario = usuario.Nome + " " + usuario.Sobrenome;
-
-            var amigosSolicitacoesViewModel = new AmigosViewModel()
-            {
-                Id = amigosModel.Id,
-                NomeCompleto = nomeUsuario,
-                Perfil = usuario.IdentityUser,
-                Foto = usuario.FotoPerfil
-            };
-
-            return amigosSolicitacoesViewModel;
+            return new AmigosViewModel(amigosModel, usuario);
         }
 
         private static (int, string) DefinirTempoPostagem(DateTime dataPostagem)
@@ -212,26 +188,12 @@ namespace RedeSocial.Apresentacao.Controllers
             foreach (var comentario in listaComentarios)
             {
                 var usuarioModel = await _usuarioServices.GetByIdAsync(comentario.IdentityUser);
-                var (tempo,formato) = DefinirTempoPostagem(comentario.DataDoComment);
+                var (tempo, formato) = DefinirTempoPostagem(comentario.DataDoComment);
 
-                var commentPostViewModel = new CommentPostViewModel
-                {
-                    Comment = comentario.Comment,
-                    IdentityUser = comentario.IdentityUser,
-                    Nome = usuarioModel.Nome + " " + usuarioModel.Sobrenome,
-                    TempoDoComentario = tempo,
-                    FormatacaoTempo = formato,
-                    FotoPerfil = usuarioModel.FotoPerfil,
-                    Id = comentario.Id
-                    
-                };
-
-                commentList.Add(commentPostViewModel);
+                commentList.Add(new CommentPostViewModel(comentario,usuarioModel,tempo,formato));
             }
 
             return commentList;
         }
-
     }
-
 }

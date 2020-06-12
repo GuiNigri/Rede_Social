@@ -19,6 +19,6 @@ namespace RedeSocial.Apresentacao.Models
         public int AmigosPerfilCount { get; set; }
         public int StatusAmizade { get; set; }
 
-        public IEnumerable<PostViewModel> ListaPost;
+        public IEnumerable<PostViewModel> PostList;
     }
 }

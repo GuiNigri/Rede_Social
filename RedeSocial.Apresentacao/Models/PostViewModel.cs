@@ -16,5 +16,7 @@ namespace RedeSocial.Apresentacao.Models
         public string FormatacaoTempo { get; set; }
         public string IdentityUser { get; set; }
         public string FotoPerfil { get; set; }
+
+        public IEnumerable<CommentPostViewModel> CommentList { get; set; }
     }
 }

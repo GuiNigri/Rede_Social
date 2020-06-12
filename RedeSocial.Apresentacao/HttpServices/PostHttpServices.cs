@@ -83,5 +83,6 @@ namespace RedeSocial.Apresentacao.HttpServices
         {
             throw new NotImplementedException();
         }
+
     }
 }

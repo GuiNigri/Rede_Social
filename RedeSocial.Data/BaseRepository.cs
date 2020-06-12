@@ -11,31 +11,31 @@ namespace RedeSocial.Data
 {
     public abstract class BaseRepository<TModel>:IBaseRepository<TModel> where TModel: BaseModel
     {
-        private readonly RedeSocialContext _context;
-        private readonly DbSet<TModel> _dbSet;
+        protected readonly RedeSocialContext Context;
+        protected readonly DbSet<TModel> _dbSet;
 
         protected BaseRepository(RedeSocialContext context)
         {
-            _context = context;
+            Context = context;
             _dbSet = context.Set<TModel>();
         }
         public virtual async Task CreateAsync(TModel model)
         {
             await _dbSet.AddAsync(model);
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
         public virtual async Task UpdateAsync(TModel model)
         {
             _dbSet.Update(model);
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
         public virtual async Task DeleteAsync(int id)
         {
             var model = await _dbSet.FindAsync(id);
             _dbSet.Remove(model);
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
         public virtual async Task<IEnumerable<TModel>> GetAllAsync()

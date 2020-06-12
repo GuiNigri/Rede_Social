@@ -13,10 +13,13 @@ namespace RedeSocial.Apresentacao.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostServices _postServices;
+        private readonly ICommentPostServices _commentPostServices;
 
-        public PostController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices) : base(userManager, usuarioServices, postServices, amigosServices)
+        public PostController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices)
+            : base(userManager, usuarioServices, postServices, commentPostServices, amigosServices)
         {
             _postServices = postServices;
+            _commentPostServices = commentPostServices;
         }
 
         // POST: PostController/Create
@@ -71,6 +74,57 @@ namespace RedeSocial.Apresentacao.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateComment(string comment, int idPost)
+        {
+            try
+            {
+                var userId = await GetUserIdentityAsync();
+
+                var commentPostModel = new CommentPostModel
+                {
+                    Comment = comment,
+                    PostModelId = idPost,
+                    IdentityUser = userId,
+                    DataDoComment = DateTime.Now
+                };
+
+               await _commentPostServices.CreateAsync(commentPostModel);
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            try
+            {
+                var userId = await GetUserIdentityAsync();
+
+                var commentPostModel = await _commentPostServices.GetByIdAsync(id);
+
+                if (userId == commentPostModel.IdentityUser)
+                {
+
+                    await _commentPostServices.DeleteAsync(id);
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
 
     }
 }

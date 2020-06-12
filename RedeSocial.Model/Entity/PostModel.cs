@@ -19,15 +19,19 @@ namespace RedeSocial.Model.Entity
     public class CommentPostModel : BaseModel
     {
         public string IdentityUser { get; set; }
-        public PostModel IdPostModel { get; set; }
         public string Comment { get; set; }
+        public int PostModelId { get; set; }
+        public DateTime DataDoComment { get; set; }
+        public PostModel Post { get; set; }
+        
     }
 
     public class LikesPostModel : BaseModel
     {
         public string IdentityUser { get; set; }
-        public PostModel IdPostModel { get; set; }
-        public int MyProperty { get; set; }
+        public int PostModelId { get; set; }
+        public PostModel Post { get; set; }
+        
     }
 
 }

@@ -22,7 +22,8 @@ namespace RedeSocial.Apresentacao.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IAmigosServices _amigosServices;
 
-        public UsuarioController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices) : base(userManager, usuarioServices, postServices, amigosServices)
+        public UsuarioController(IAmigosServices amigosServices, UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices)
+            : base(userManager, usuarioServices, postServices, commentPostServices, amigosServices)
         {
             _usuarioServices = usuarioServices;
             _userManager = userManager;
@@ -71,7 +72,7 @@ namespace RedeSocial.Apresentacao.Controllers
                 IdentityUserPerfil = usuarioPerfil.IdentityUser,
                 NomePerfil = usuarioPerfil.Nome + " " + usuarioPerfil.Sobrenome,
                 FotoPerfil = usuarioPerfil.FotoPerfil,
-                ListaPost = postList,
+                PostList = postList,
                 StatusAmizade = statusAmizade,
                 Amigos = amigosList,
                 IdAmizade = idAmizade,

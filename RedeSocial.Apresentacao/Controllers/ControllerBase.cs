@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RedeSocial.Apresentacao.Models;
 using RedeSocial.Model.Interfaces.Services;
 using RedeSocial.Model.Entity;
@@ -17,13 +18,15 @@ namespace RedeSocial.Apresentacao.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUsuarioServices _usuarioServices;
         private readonly IPostServices _postServices;
+        private readonly ICommentPostServices _commentPostServices;
         private readonly IAmigosServices _amigosServices;
 
-        public ControllerBase(UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, IAmigosServices amigosServices)
+        public ControllerBase(UserManager<IdentityUser> userManager, IUsuarioServices usuarioServices, IPostServices postServices, ICommentPostServices commentPostServices, IAmigosServices amigosServices)
         {
             _userManager = userManager;
             _usuarioServices = usuarioServices;
             _postServices = postServices;
+            _commentPostServices = commentPostServices;
             _amigosServices = amigosServices;
         }
 
@@ -71,6 +74,8 @@ namespace RedeSocial.Apresentacao.Controllers
 
             var nomeUsuario = usuario.Nome + " " + usuario.Sobrenome;
 
+            var listaComentarios = await GetListCommentByIdPost(postModel.Id);
+
             (var tempo, var formatoDeTempo) = DefinirTempoPostagem(postModel.DataPostagem);
 
             var postViewModel = new PostViewModel
@@ -83,7 +88,8 @@ namespace RedeSocial.Apresentacao.Controllers
                 TempoDaPostagem = tempo,
                 FormatacaoTempo = formatoDeTempo,
                 IdentityUser = postModel.IdentityUser,
-                FotoPerfil = usuario.FotoPerfil
+                FotoPerfil = usuario.FotoPerfil,
+                CommentList = listaComentarios
             };
 
             return postViewModel;
@@ -191,10 +197,39 @@ namespace RedeSocial.Apresentacao.Controllers
         public async Task<(List<PostViewModel>,UsuarioModel,IEnumerable<AmigosViewModel>)> HomeIndexAndUsuarioPerfilBase(string userPerfil, string userIdLogado)
         {
             var posts = await GetPostsAsync(userPerfil);
+
             var usuarioLogado = await GetUsuarioModelAsync(userIdLogado);
             var listaDeAmigos = await GetAmigosAsync();
 
             return (posts, usuarioLogado, listaDeAmigos);
+        }
+
+        public async Task<IEnumerable<CommentPostViewModel>> GetListCommentByIdPost(int idPost)
+        {
+            var commentList = new List<CommentPostViewModel>();
+            var listaComentarios = await _commentPostServices.GetPostByIdAsync(idPost);
+
+            foreach (var comentario in listaComentarios)
+            {
+                var usuarioModel = await _usuarioServices.GetByIdAsync(comentario.IdentityUser);
+                var (tempo,formato) = DefinirTempoPostagem(comentario.DataDoComment);
+
+                var commentPostViewModel = new CommentPostViewModel
+                {
+                    Comment = comentario.Comment,
+                    IdentityUser = comentario.IdentityUser,
+                    Nome = usuarioModel.Nome + " " + usuarioModel.Sobrenome,
+                    TempoDoComentario = tempo,
+                    FormatacaoTempo = formato,
+                    FotoPerfil = usuarioModel.FotoPerfil,
+                    Id = comentario.Id
+                    
+                };
+
+                commentList.Add(commentPostViewModel);
+            }
+
+            return commentList;
         }
 
     }

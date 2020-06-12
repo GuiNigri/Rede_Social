@@ -15,10 +15,12 @@ namespace RedeSocial.Aplicacao.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostServices _postServices;
+        private readonly ICommentPostServices _commentPostServices;
 
-        public PostController(IPostServices postServices)
+        public PostController(IPostServices postServices, ICommentPostServices commentPostServices)
         {
             _postServices = postServices;
+            _commentPostServices = commentPostServices;
         }
 
         // POST: api/Usuario
@@ -26,7 +28,7 @@ namespace RedeSocial.Aplicacao.Controllers
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
 
         [HttpPost]
-        public async Task<ActionResult<PostModel>> PostUsuarioModel([Bind("Id, IdentityUser,Texto,UriImage,Privacidade")] PostModel postModel)
+        public async Task<ActionResult<PostModel>> PostPostModel([Bind("Id, IdentityUser,Texto,UriImage,Privacidade")] PostModel postModel)
         {
 
             if (!ModelState.IsValid)
@@ -102,6 +104,8 @@ namespace RedeSocial.Aplicacao.Controllers
 
             return post;
         }
+
+
 
     }
 }

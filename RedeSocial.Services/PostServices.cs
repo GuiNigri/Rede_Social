@@ -39,6 +39,7 @@ namespace RedeSocial.Services
             await _postRepository.DeleteAsync(id);
         }
 
+
         public async Task<IEnumerable<PostModel>> GetPostsByUserAsync(string id)
         {
             return await _postRepository.GetPostsByUserAsync(id);

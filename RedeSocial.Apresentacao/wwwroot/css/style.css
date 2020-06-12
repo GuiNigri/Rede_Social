@@ -84,6 +84,9 @@ a:hover, a:focus {
   outline: none;
 }
 
+.hidden-comment {
+    display: none;
+}
 .primary-color {
   color: #F8694A;
 }

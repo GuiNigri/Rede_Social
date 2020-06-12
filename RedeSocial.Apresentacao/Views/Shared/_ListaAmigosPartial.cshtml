@@ -1,0 +1,28 @@
+﻿<div class="col-md-3">
+    <div class="card">
+        <div class="card-body">
+            <div class="h5"></div>
+            <div class="h5 text-muted">Lista de amigos</div>
+        </div>
+        <ul class="list-group list-group-flush">
+            @foreach (var amigo in Model.Amigos)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="h6 col-md-10">
+                            <img class="rounded-circle" src="@amigo.Foto" width="45" />
+                            <a class="text-dark" asp-controller="Usuario" asp-action="Perfil" asp-route-userPerfil="@amigo.Perfil"> @amigo.NomeCompleto </a>
+                        </div>
+                        <div class="col-sm-2" style="margin-top: 15px;">
+                            <form asp-controller="Amigos" asp-action="Delete" asp-route-id="@amigo.Id" method="post">
+                                <button class="btn-sm btn-danger"><i class="fa fa-remove"></i></button>
+                            </form>
+                        </div>
+                    </div>
+
+                </li>
+            }
+
+        </ul>
+    </div>
+</div>

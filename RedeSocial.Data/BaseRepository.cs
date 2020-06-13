@@ -22,20 +22,20 @@ namespace RedeSocial.Data
         public virtual async Task CreateAsync(TModel model)
         {
             await _dbSet.AddAsync(model);
-            await Context.SaveChangesAsync();
+
         }
 
         public virtual async Task UpdateAsync(TModel model)
         {
             _dbSet.Update(model);
-            await Context.SaveChangesAsync();
+
         }
 
         public virtual async Task DeleteAsync(int id)
         {
             var model = await _dbSet.FindAsync(id);
             _dbSet.Remove(model);
-            await Context.SaveChangesAsync();
+
         }
 
         public virtual async Task<IEnumerable<TModel>> GetAllAsync()

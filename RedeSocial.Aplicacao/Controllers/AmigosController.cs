@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using RedeSocial.Model.Entity;
 using RedeSocial.Model.Exceptions;
 using RedeSocial.Model.Interfaces.Services;
+using RedeSocial.Model.UoW;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,10 +17,12 @@ namespace RedeSocial.Aplicacao.Controllers
     public class AmigosController : ControllerBase
     {
         private readonly IAmigosServices _amigosServices;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AmigosController(IAmigosServices amigosServices)
+        public AmigosController(IAmigosServices amigosServices,IUnitOfWork unitOfWork)
         {
             _amigosServices = amigosServices;
+            _unitOfWork = unitOfWork;
         }
 
         // POST: api/Usuario
@@ -37,7 +40,9 @@ namespace RedeSocial.Aplicacao.Controllers
 
             try
             {
+                _unitOfWork.BeginTransaction();
                 await _amigosServices.CreateAsync(amigosModel);
+                await _unitOfWork.CommitAsync();
             }
             catch (ModelValidationExceptions e)
             {
@@ -63,7 +68,9 @@ namespace RedeSocial.Aplicacao.Controllers
 
             try
             {
+                _unitOfWork.BeginTransaction();
                 await _amigosServices.UpdateAsync(amigosModel);
+                await _unitOfWork.CommitAsync();
             }
             catch (ModelValidationExceptions e)
             {
@@ -161,9 +168,11 @@ namespace RedeSocial.Aplicacao.Controllers
                  return NotFound();
              }
         
+             _unitOfWork.BeginTransaction();
              await _amigosServices.DeleteAsync(id);
-        
-             return amigosModel;
+             await _unitOfWork.CommitAsync();
+
+            return amigosModel;
          }
 
     }

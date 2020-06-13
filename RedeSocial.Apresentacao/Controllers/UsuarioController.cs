@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -79,29 +80,35 @@ namespace RedeSocial.Apresentacao.Controllers
             {
                 try
                 {
+                    var user = new IdentityUser
+                        {UserName = usuarioCreateViewModel.Email, Email = usuarioCreateViewModel.Email};
 
-                    var user = new IdentityUser { UserName = usuarioCreateViewModel.Email, Email = usuarioCreateViewModel.Email }; 
+                    using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
                     var result = await _userManager.CreateAsync(user, usuarioCreateViewModel.Password);
 
                     if (result.Succeeded)
-                    { 
+                    {
                         usuarioCreateViewModel.IdentityUser = user.Id;
 
                         var usuarioModel = ConvertViewModelToModel(usuarioCreateViewModel);
+
                         await _usuarioServices.CreateAsync(usuarioModel, ConvertIFormFileToBase64(ImageFile));
 
-                        return RedirectToAction("Index","Home");
+                        scope.Complete();
+
                     }
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
-                    
 
+                        
+                    return RedirectToAction("Index", "Home");
                 }
                 catch (ModelValidationExceptions e)
                 {
                     ModelState.AddModelError(e.PropertyName, e.Message);
+                    
                 }
             }
 

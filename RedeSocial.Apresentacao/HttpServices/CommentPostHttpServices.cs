@@ -43,11 +43,6 @@ namespace RedeSocial.Apresentacao.HttpServices
             }
         }
 
-        public async Task UpdateAsync(CommentPostModel model)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task DeleteAsync(int id)
         {
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.CommentPostPath}/{id}";
@@ -58,11 +53,6 @@ namespace RedeSocial.Apresentacao.HttpServices
             {
 
             }
-        }
-
-        public async Task<IEnumerable<CommentPostModel>> GetAllAsync()
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<CommentPostModel> GetByIdAsync(int id)
@@ -78,6 +68,23 @@ namespace RedeSocial.Apresentacao.HttpServices
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.CommentPostPath}/list/{id}";
             var result = await _httpClient.GetStringAsync(pathWithId);
             return JsonConvert.DeserializeObject<IEnumerable<CommentPostModel>>(result);
+        }
+
+        public async Task<IEnumerable<CommentPostModel>> GetCommentByUserAsync(string userId)
+        {
+            var pathWithId = $"{_projetoHttpOptions.CurrentValue.CommentPostPath}/commentbyuser/{userId}";
+            var result = await _httpClient.GetStringAsync(pathWithId);
+            return JsonConvert.DeserializeObject<IEnumerable<CommentPostModel>>(result);
+        }
+
+        public async Task UpdateAsync(CommentPostModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<CommentPostModel>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
 
     }

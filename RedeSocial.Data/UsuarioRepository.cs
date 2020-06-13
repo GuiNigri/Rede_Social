@@ -18,6 +18,11 @@ namespace RedeSocial.Data
             _context = context;
         }
 
+        public override async Task CreateAsync(UsuarioModel usuarioModel)
+        {
+            await _context.UsuarioModel.AddAsync(usuarioModel);
+            await _context.SaveChangesAsync();
+        }
         public async Task DeleteAsync(string id)
         {
             var usuarioModel = await _context.UsuarioModel.FirstOrDefaultAsync(x => x.IdentityUser == id);

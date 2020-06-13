@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RedeSocial.Model.Entity;
@@ -7,6 +8,7 @@ using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Apresentacao.Controllers
 {
+    [Authorize]
     public class AmigosController : ControllerBase
     {
         private readonly IAmigosServices _amigosServices;

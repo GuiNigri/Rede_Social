@@ -9,5 +9,6 @@ namespace RedeSocial.Model.Interfaces.Repositories
     public interface ICommentPostRepository:IBaseRepository<CommentPostModel>
     {
         Task<IEnumerable<CommentPostModel>> GetPostByIdAsync(int id);
+        Task<IEnumerable<CommentPostModel>> GetCommentByUserAsync(string userId);
     }
 }

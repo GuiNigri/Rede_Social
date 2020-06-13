@@ -53,11 +53,6 @@ namespace RedeSocial.Apresentacao.HttpServices
             }
         }
 
-        public Task DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<PostModel>> GetAllAsync()
         {
             var path = $"{_projetoHttpOptions.CurrentValue.PostPath}";
@@ -80,6 +75,11 @@ namespace RedeSocial.Apresentacao.HttpServices
         }
 
         public Task UpdateAsync(PostModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }

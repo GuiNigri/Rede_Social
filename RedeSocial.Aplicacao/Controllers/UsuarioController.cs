@@ -9,7 +9,9 @@ using RedeSocial.Model.Entity;
 using RedeSocial.Model.Interfaces.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 using RedeSocial.Model.Exceptions;
+using RedeSocial.Model.UoW;
 
 namespace RedeSocial.Aplicacao.Controllers
 {
@@ -18,10 +20,14 @@ namespace RedeSocial.Aplicacao.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioServices _usuarioServices;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UsuarioController(IUsuarioServices usuarioServices)
+        public UsuarioController(IUsuarioServices usuarioServices, IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
         {
             _usuarioServices = usuarioServices;
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         // GET: api/Usuario
@@ -86,8 +92,9 @@ namespace RedeSocial.Aplicacao.Controllers
 
             try
             {
-
+                _unitOfWork.BeginTransaction();
                 await _usuarioServices.UpdateAsync(usuarioModel,imageBase64);
+                await _unitOfWork.CommitAsync();
             }
             catch (ModelValidationExceptions e)
             {
@@ -116,11 +123,11 @@ namespace RedeSocial.Aplicacao.Controllers
                 return BadRequest(ModelState);
             }
 
+            var usuarioModel = createUsuarioModel.UsuarioModel;
+            var imageBase64 = createUsuarioModel.ImageBase64;
+
             try
             {
-                var usuarioModel = createUsuarioModel.UsuarioModel;
-                var imageBase64 = createUsuarioModel.ImageBase64;
-
                 await _usuarioServices.CreateAsync(usuarioModel,imageBase64);
             }
             catch (ModelValidationExceptions e)

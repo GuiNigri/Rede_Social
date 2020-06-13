@@ -10,5 +10,6 @@ namespace RedeSocial.Model.Interfaces.Repositories
     {
         Task<IEnumerable<LikePostModel>> GetPostByIdAsync(int id);
         Task<LikePostModel> GetStatusAsync(string userId, int idPost);
+        Task<IEnumerable<LikePostModel>> GetLikeByUserAsync(string userId);
     }
 }

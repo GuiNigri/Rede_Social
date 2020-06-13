@@ -27,5 +27,9 @@ namespace RedeSocial.Services
             return await _likePostRepository.GetStatusAsync(userId, idPost);
         }
 
+        public async Task<IEnumerable<LikePostModel>> GetLikeByUserAsync(string userId)
+        {
+            return await _likePostRepository.GetLikeByUserAsync(userId);
+        }
     }
 }

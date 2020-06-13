@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using RedeSocial.Model.Entity;
 using RedeSocial.Model.Exceptions;
 using RedeSocial.Model.Interfaces.Services;
+using RedeSocial.Model.UoW;
 
 namespace RedeSocial.Aplicacao.Controllers
 {
@@ -15,10 +16,12 @@ namespace RedeSocial.Aplicacao.Controllers
     public class CommentPostController : ControllerBase
     {
         private readonly ICommentPostServices _commentPostServices;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CommentPostController(ICommentPostServices commentPostServices)
+        public CommentPostController(ICommentPostServices commentPostServices, IUnitOfWork unitOfWork)
         {
             _commentPostServices = commentPostServices;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -31,7 +34,9 @@ namespace RedeSocial.Aplicacao.Controllers
 
             try
             {
+                _unitOfWork.BeginTransaction();
                 await _commentPostServices.CreateAsync(commentPostModel);
+                await _unitOfWork.CommitAsync();
             }
             catch (ModelValidationExceptions e)
             {
@@ -78,6 +83,24 @@ namespace RedeSocial.Aplicacao.Controllers
             return commentPostModel;
         }
 
+        [HttpGet("commentbyuser/{userId}")]
+        public async Task<ActionResult<IEnumerable<CommentPostModel>>> GetCommentPostModel(string userId)
+        {
+            if (userId == null)
+            {
+                return NotFound();
+            }
+
+            var commentPostModel = await _commentPostServices.GetCommentByUserAsync(userId);
+
+            if (commentPostModel == null)
+            {
+                return NotFound();
+            }
+
+            return commentPostModel.ToList();
+        }
+
         // DELETE: api/Usuario/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<UsuarioModel>> DeleteCommentPostModel(int id)
@@ -93,7 +116,9 @@ namespace RedeSocial.Aplicacao.Controllers
                 return NotFound();
             }
 
+            _unitOfWork.BeginTransaction();
             await _commentPostServices.DeleteAsync(id);
+            await _unitOfWork.CommitAsync();
 
             return base.Ok();
         }

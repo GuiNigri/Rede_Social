@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Apresentacao.Controllers
 {
+    [Authorize]
     public class PostController : ControllerBase
     {
         private readonly IPostServices _postServices;
@@ -148,7 +150,8 @@ namespace RedeSocial.Apresentacao.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                await _likePostServices.DeleteAsync(idPost);
+
+                await _likePostServices.DeleteAsync(statusLikePostModel.Id);
 
                 return RedirectToAction("Index", "Home");
 

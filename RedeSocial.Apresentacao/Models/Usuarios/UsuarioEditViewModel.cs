@@ -19,6 +19,11 @@ namespace RedeSocial.Apresentacao.Models.Usuarios
         public DateTime DataNascimento { get; set; }
         public string IdentityUser { get; set; }
 
+        public UsuarioEditViewModel()
+        {
+            
+        }
+
         public UsuarioEditViewModel(UsuarioModel usuarioModel)
         {
             IdentityUser = usuarioModel.IdentityUser;

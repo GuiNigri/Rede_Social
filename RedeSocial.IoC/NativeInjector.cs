@@ -4,10 +4,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RedeSocial.Data;
 using RedeSocial.Data.RedeSocial.Context;
+using RedeSocial.Data.UoW;
 using RedeSocial.Infraestrutura.Blob;
 using RedeSocial.Model.Interfaces.Blob;
 using RedeSocial.Model.Interfaces.Repositories;
 using RedeSocial.Model.Interfaces.Services;
+using RedeSocial.Model.UoW;
 using RedeSocial.Services;
 
 namespace RedeSocial.IoC
@@ -23,6 +25,7 @@ namespace RedeSocial.IoC
             services.AddScoped<IAmigosServices, AmigosServices>();
             services.AddScoped<ICommentPostServices, CommentPostServices>();
             services.AddScoped<ILikePostServices, LikePostServices>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             AddDbContextAndData(services,configuration);
             

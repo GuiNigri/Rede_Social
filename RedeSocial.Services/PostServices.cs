@@ -11,11 +11,15 @@ namespace RedeSocial.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly IBlobServices _blobServices;
+        private readonly ICommentPostServices _commentPostServices;
+        private readonly ILikePostServices _likePostServices;
 
-        public PostServices(IPostRepository postRepository, IBlobServices blobServices):base(postRepository)
+        public PostServices(IPostRepository postRepository, IBlobServices blobServices, ICommentPostServices commentPostServices, ILikePostServices likePostServices):base(postRepository)
         {
             _postRepository = postRepository;
             _blobServices = blobServices;
+            _commentPostServices = commentPostServices;
+            _likePostServices = likePostServices;
         }
         public override async Task CreateAsync(PostModel postModel)
         {
@@ -31,12 +35,27 @@ namespace RedeSocial.Services
 
         public async Task DeleteAsync(int id, string uri)
         {
-            if(uri != null)
+            var comentarios = await _commentPostServices.GetPostByIdAsync(id);
+
+            var likes = await _likePostServices.GetPostByIdAsync(id);
+
+
+            foreach (var comentario in comentarios)
             {
-                await _blobServices.DeleteBlobAsync(uri);
+                await _commentPostServices.DeleteAsync(comentario.Id);
+            }
+
+            foreach (var like in likes)
+            {
+                await _likePostServices.DeleteAsync(like.Id);
             }
 
             await _postRepository.DeleteAsync(id);
+
+            if (uri != null)
+            {
+                await _blobServices.DeleteBlobAsync(uri);
+            }
         }
 
 

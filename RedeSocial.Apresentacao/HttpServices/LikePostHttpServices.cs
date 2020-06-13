@@ -41,11 +41,6 @@ namespace RedeSocial.Apresentacao.HttpServices
             }
         }
 
-        public async Task UpdateAsync(LikePostModel model)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task DeleteAsync(int id)
         {
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.LikePostPath}/{id}";
@@ -63,11 +58,6 @@ namespace RedeSocial.Apresentacao.HttpServices
             throw new NotImplementedException();
         }
 
-        public async Task<LikePostModel> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<LikePostModel>> GetPostByIdAsync(int id)
         {
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.LikePostPath}/list/{id}";
@@ -80,6 +70,22 @@ namespace RedeSocial.Apresentacao.HttpServices
             var pathWithId = $"{_projetoHttpOptions.CurrentValue.LikePostPath}/{userId}/{idPost}";
             var result = await _httpClient.GetStringAsync(pathWithId);
             return JsonConvert.DeserializeObject<LikePostModel>(result);
+        }
+
+        public async Task<IEnumerable<LikePostModel>> GetLikeByUserAsync(string userId)
+        {
+            var pathWithId = $"{_projetoHttpOptions.CurrentValue.LikePostPath}/likebyuser/{userId}";
+            var result = await _httpClient.GetStringAsync(pathWithId);
+            return JsonConvert.DeserializeObject<IEnumerable<LikePostModel>>(result);
+        }
+
+        public async Task UpdateAsync(LikePostModel model)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<LikePostModel> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

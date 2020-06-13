@@ -16,16 +16,11 @@ namespace RedeSocial.Data
 
         public LikePostRepository(RedeSocialContext context):base(context)
         {
-            _context = context;
         }
 
         public async Task<IEnumerable<LikePostModel>> GetPostByIdAsync(int id)
         {
             return await _dbSet.Where(x => x.PostModelId == id).ToListAsync();
-        }
-        public override async Task<LikePostModel> GetByIdAsync(int id)
-        {
-            return await _dbSet.FirstOrDefaultAsync(x => x.PostModelId == id);
         }
 
         public async Task<LikePostModel> GetStatusAsync(string userId, int idPost)
@@ -33,11 +28,9 @@ namespace RedeSocial.Data
             return await _dbSet.FirstOrDefaultAsync(x => x.PostModelId == idPost && x.IdentityUser == userId);
         }
 
-        public override async Task DeleteAsync(int id)
+        public async Task<IEnumerable<LikePostModel>> GetLikeByUserAsync(string userId)
         {
-            var likeModel = await _dbSet.FirstOrDefaultAsync(x => x.PostModelId == id);
-            _dbSet.Remove(likeModel);
-            await _context.SaveChangesAsync();
+            return await _dbSet.Where(x => x.IdentityUser == userId).ToListAsync();
         }
     }
 }

@@ -19,5 +19,10 @@ namespace RedeSocial.Services
         {
             return await _commentPostRepository.GetPostByIdAsync(id);
         }
+
+        public async Task<IEnumerable<CommentPostModel>> GetCommentByUserAsync(string userId)
+        {
+            return await _commentPostRepository.GetCommentByUserAsync(userId);
+        }
     }
 }

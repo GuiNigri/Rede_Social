@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -69,13 +70,20 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            var result = await _userManager.DeleteAsync(user);
+
             if (!result.Succeeded)
             {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
+                throw new InvalidOperationException(
+                    $"Unexpected error occurred deleting user with ID '{userId}'.");
             }
+
             await _usuarioServices.DeleteAsync(user.Id);
+
+            scope.Complete();
 
             await _signInManager.SignOutAsync();
 

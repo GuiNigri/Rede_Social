@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using RedeSocial.Model.Entity;
 using RedeSocial.Model.Exceptions;
 using RedeSocial.Model.Interfaces.Services;
+using RedeSocial.Model.UoW;
 
 namespace RedeSocial.Aplicacao.Controllers
 {
@@ -16,11 +17,13 @@ namespace RedeSocial.Aplicacao.Controllers
     {
         private readonly IPostServices _postServices;
         private readonly ICommentPostServices _commentPostServices;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PostController(IPostServices postServices, ICommentPostServices commentPostServices)
+        public PostController(IPostServices postServices, ICommentPostServices commentPostServices, IUnitOfWork unitOfWork)
         {
             _postServices = postServices;
             _commentPostServices = commentPostServices;
+            _unitOfWork = unitOfWork;
         }
 
         // POST: api/Usuario
@@ -38,7 +41,9 @@ namespace RedeSocial.Aplicacao.Controllers
 
             try
             {
+                _unitOfWork.BeginTransaction();
                 await _postServices.CreateAsync(postModel);
+                await _unitOfWork.CommitAsync();
             }
             catch (ModelValidationExceptions e)
             {
@@ -100,7 +105,9 @@ namespace RedeSocial.Aplicacao.Controllers
                 return NotFound();
             }
 
+            _unitOfWork.BeginTransaction();
             await _postServices.DeleteAsync(id,post.UriImage);
+            await _unitOfWork.CommitAsync();
 
             return post;
         }

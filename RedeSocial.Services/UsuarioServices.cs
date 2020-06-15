@@ -12,17 +12,17 @@ namespace RedeSocial.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IBlobServices _blobServices;
         private readonly IPostServices _postServices;
-        private readonly ICommentPostServices _commentPostServices;
-        private readonly ILikePostServices _likePostServices;
+        private readonly ICommentPostServices _commentPostRepository;
+        private readonly ILikePostRepository _likePostRepository;
         private readonly IAmigosRepository _amigosRepository;
 
-        public UsuarioServices(IUsuarioRepository usuarioRepository, IBlobServices blobServices, IPostServices postServices, ICommentPostServices commentPostServices, ILikePostServices likePostServices,IAmigosRepository amigosRepository):base(usuarioRepository)
+        public UsuarioServices(IUsuarioRepository usuarioRepository, IBlobServices blobServices, IPostServices postServices, ICommentPostServices commentPostRepository, ILikePostRepository likePostRepository,IAmigosRepository amigosRepository):base(usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
             _blobServices = blobServices;
             _postServices = postServices;
-            _commentPostServices = commentPostServices;
-            _likePostServices = likePostServices;
+            _commentPostRepository = commentPostRepository;
+            _likePostRepository = likePostRepository;
             _amigosRepository = amigosRepository;
         }
         public async Task CreateAsync(UsuarioModel usuarioModel, string base64)
@@ -59,9 +59,9 @@ namespace RedeSocial.Services
         {
             var postagens = await _postServices.GetPostsByUserAsync(id);
 
-            var comentarios = await _commentPostServices.GetCommentByUserAsync(id);
+            var comentarios = await _commentPostRepository.GetCommentByUserAsync(id);
 
-            var likes = await _likePostServices.GetLikeByUserAsync(id);
+            var likes = await _likePostRepository.GetLikeByUserAsync(id);
 
             var amigos = await _amigosRepository.GetAllByUserAsync(id);
 
@@ -74,12 +74,12 @@ namespace RedeSocial.Services
 
             foreach (var comentario in comentarios)
             {
-                await _commentPostServices.DeleteAsync(comentario.Id);
+                await _commentPostRepository.DeleteAsync(comentario.Id);
             }
 
             foreach (var like in likes)
             {
-                await _likePostServices.DeleteAsync(like.Id);
+                await _likePostRepository.DeleteAsync(like.Id);
             }
 
             foreach (var amigo in amigos)

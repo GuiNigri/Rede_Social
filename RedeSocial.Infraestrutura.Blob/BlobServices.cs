@@ -40,7 +40,7 @@ namespace RedeSocial.Infraestrutura.Blob
             return blobClient.Uri.ToString();
         }
 
-       
+
         public async Task DeleteBlobAsync(string blobName)
         {
             var blob = new BlobClient(new Uri(blobName));

@@ -29,5 +29,10 @@ namespace RedeSocial.Services
         {
             return await _amigosRepository.GetListByUserAsync(userLogado);
         }
+
+        public async Task<IEnumerable<AmigosModel>> GetAllByUserAsync(string userLogado)
+        {
+            return await _amigosRepository.GetAllByUserAsync(userLogado);
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace RedeSocial.Model.Interfaces.Repositories
         Task<AmigosModel> GetByUsersAsync(string userLogado, string perfilAcessado);
         Task<IEnumerable<AmigosModel>> GetSolicitacoesPendentes(string userLogado);
         Task<IEnumerable<AmigosModel>> GetListByUserAsync(string userLogado);
+        Task<IEnumerable<AmigosModel>> GetAllByUserAsync(string userLogado);
     }
 }

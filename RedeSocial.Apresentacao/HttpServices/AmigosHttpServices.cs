@@ -108,5 +108,10 @@ namespace RedeSocial.Apresentacao.HttpServices
             var result = await _httpClient.GetStringAsync(pathWithId);
             return JsonConvert.DeserializeObject<IEnumerable<AmigosModel>>(result);
         }
+
+        public async Task<IEnumerable<AmigosModel>> GetAllByUserAsync(string userLogado)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

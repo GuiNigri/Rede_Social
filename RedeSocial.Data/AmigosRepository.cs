@@ -51,6 +51,22 @@ namespace RedeSocial.Data
 
         }
 
+        public async Task<IEnumerable<AmigosModel>> GetAllByUserAsync(string userLogado)
+        {
+            try
+            {
+                var consulta = await _context.AmigosModel.Where(x =>
+                    x.UserIdSolicitado == userLogado || x.UserIdSolicitante == userLogado).ToListAsync();
+
+                return consulta;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
         public async Task<IEnumerable<AmigosModel>> GetSolicitacoesPendentes(string userLogado)
         {
             return await _context.AmigosModel.Where(x =>

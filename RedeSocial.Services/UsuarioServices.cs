@@ -14,14 +14,16 @@ namespace RedeSocial.Services
         private readonly IPostServices _postServices;
         private readonly ICommentPostServices _commentPostServices;
         private readonly ILikePostServices _likePostServices;
+        private readonly IAmigosRepository _amigosRepository;
 
-        public UsuarioServices(IUsuarioRepository usuarioRepository, IBlobServices blobServices, IPostServices postServices, ICommentPostServices commentPostServices, ILikePostServices likePostServices):base(usuarioRepository)
+        public UsuarioServices(IUsuarioRepository usuarioRepository, IBlobServices blobServices, IPostServices postServices, ICommentPostServices commentPostServices, ILikePostServices likePostServices,IAmigosRepository amigosRepository):base(usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
             _blobServices = blobServices;
             _postServices = postServices;
             _commentPostServices = commentPostServices;
             _likePostServices = likePostServices;
+            _amigosRepository = amigosRepository;
         }
         public async Task CreateAsync(UsuarioModel usuarioModel, string base64)
         {
@@ -61,6 +63,8 @@ namespace RedeSocial.Services
 
             var likes = await _likePostServices.GetLikeByUserAsync(id);
 
+            var amigos = await _amigosRepository.GetAllByUserAsync(id);
+
             var user = await _usuarioRepository.GetByIdAsync(id);
 
             foreach (var post in postagens)
@@ -76,6 +80,11 @@ namespace RedeSocial.Services
             foreach (var like in likes)
             {
                 await _likePostServices.DeleteAsync(like.Id);
+            }
+
+            foreach (var amigo in amigos)
+            {
+                await _amigosRepository.DeleteAsync(amigo.Id);
             }
 
             await _blobServices.DeleteBlobAsync(user.FotoPerfil);

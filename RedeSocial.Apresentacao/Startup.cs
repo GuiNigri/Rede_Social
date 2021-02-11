@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using RedeSocial.Apresentacao.Controllers;
+using RedeSocial.Apresentacao.Extensions;
 using RedeSocial.IoC;
 
 
@@ -22,14 +23,20 @@ namespace RedeSocial.Apresentacao
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<UsuarioController>();
-            services.AddHttpClient();
-
+           
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
             services.AddRazorPages();
 
-            services.RegisterIdentity(Configuration);
-            //services.RegisterInjections(Configuration);
+            services.AddTransient<UsuarioController>();
+
+            services.RegisterHttpClients(Configuration);
+
+            services.RegisterConfigurations(Configuration);
+
+            services.RegisterIdentityForMvc(Configuration);
+
+            //services.RegisterInjectionsForWebApi(Configuration);
 
         }
 

@@ -9,6 +9,9 @@ using RedeSocial.Model.Entity;
 using RedeSocial.Model.Interfaces.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
+using RedeSocial.Model.Exceptions;
+using RedeSocial.Model.UoW;
 
 namespace RedeSocial.Aplicacao.Controllers
 {
@@ -17,23 +20,33 @@ namespace RedeSocial.Aplicacao.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioServices _usuarioServices;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UsuarioController(IUsuarioServices usuarioServices)
+        public UsuarioController(IUsuarioServices usuarioServices, IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
         {
             _usuarioServices = usuarioServices;
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         // GET: api/Usuario
         [HttpGet]
-        public async Task<IEnumerable<UsuarioModel>> GetUsuarioModel()
+        public async Task<ActionResult<IEnumerable<UsuarioModel>>> GetUsuarioModel()
         {
-            return await _usuarioServices.GetAllAsync();
+            return Ok(await _usuarioServices.GetAllAsync());
         }
 
         // GET: api/Usuario/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UsuarioModel>> GetUsuarioModel(string id)
         {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var usuarioModel = await _usuarioServices.GetByIdAsync(id);
 
             if (usuarioModel == null)
@@ -44,28 +57,34 @@ namespace RedeSocial.Aplicacao.Controllers
             return usuarioModel;
         }
 
-        //[HttpGet("{cpf}")]
-        //public async Task<ActionResult<bool>> GetUsuarioModel(long cpf)
-        //{
-        //   var resposta = await _usuarioServices.GetByCpfAsync(cpf);
-        //
-        //   if (resposta)
-        //   {
-        //       return true;
-        //   }
-        //   else
-        //   {
-        //       return false;
-        //   }
-        //
-        //}
+        [HttpGet("search/{termoInputado}")]
+        public async Task<ActionResult<IEnumerable<UsuarioModel>>> GetSearchUsuario(string termoInputado)
+        {
+
+            if (termoInputado == null)
+            {
+                return NotFound();
+            }
+
+            var usuarioModel = await _usuarioServices.GetFiltroAsync(termoInputado);
+
+            if (usuarioModel == null)
+            {
+                return NotFound();
+            }
+
+            return usuarioModel.ToList();
+        }
 
         // PUT: api/Usuario/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuarioModel(string id, [Bind("Id,Nome,Sobrenome,Cpf,DataNascimento,FotoPerfil,IdentityUser")] UsuarioModel usuarioModel)
+        public async Task<IActionResult> PutUsuarioModel(string id, [Bind("UsuarioModel, ImageBase64")] CreateAndUpdateHttpUsuarioModel createUsuarioModel)
         {
+            var usuarioModel = createUsuarioModel.UsuarioModel;
+            var imageBase64 = createUsuarioModel.ImageBase64;
+
             if (id != usuarioModel.IdentityUser)
             {
                 return BadRequest();
@@ -73,18 +92,20 @@ namespace RedeSocial.Aplicacao.Controllers
 
             try
             {
-                await _usuarioServices.UpdateAsync(usuarioModel);
+                _unitOfWork.BeginTransaction();
+                await _usuarioServices.UpdateAsync(usuarioModel,imageBase64);
+                await _unitOfWork.CommitAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ModelValidationExceptions e)
             {
-                if (!UsuarioModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+
+                ModelState.AddModelError(e.PropertyName, e.Message);
+                return BadRequest(ModelState);
+
+            } 
+            catch (System.Exception ex)
+            {
+                throw ex;
             }
 
             return NoContent();
@@ -94,31 +115,38 @@ namespace RedeSocial.Aplicacao.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<UsuarioModel>> PostUsuarioModel([Bind("Id,Nome,Sobrenome,Cpf,DataNascimento,FotoPerfil,IdentityUser")] UsuarioModel usuarioModel)
+        public async Task<ActionResult<UsuarioModel>> PostUsuarioModel([Bind("UsuarioModel, ImageBase64")] CreateAndUpdateHttpUsuarioModel createUsuarioModel)
         {
-            try
+
+            if (!ModelState.IsValid)
             {
-                await _usuarioServices.CreateAsync(usuarioModel);
-            }
-            catch (DbUpdateException)
-            {
-                if (UsuarioModelExists(usuarioModel.IdentityUser))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ModelState);
             }
 
-            return base.Ok();
+            var usuarioModel = createUsuarioModel.UsuarioModel;
+            var imageBase64 = createUsuarioModel.ImageBase64;
+
+            try
+            {
+                await _usuarioServices.CreateAsync(usuarioModel,imageBase64);
+            }
+            catch (ModelValidationExceptions e)
+            {
+                ModelState.AddModelError(e.PropertyName, e.Message);
+                return BadRequest(ModelState);
+            }
+
+            return Ok(createUsuarioModel);
         }
 
         // DELETE: api/Usuario/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<UsuarioModel>> DeleteUsuarioModel(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             var usuarioModel = await _usuarioServices.GetByIdAsync(id);
 
             if (usuarioModel == null)
@@ -126,14 +154,10 @@ namespace RedeSocial.Aplicacao.Controllers
                 return NotFound();
             }
 
-            await _usuarioServices.DeleteAsync(usuarioModel);
+            await _usuarioServices.DeleteAsync(id);
 
-            return base.Ok();
+            return Ok(usuarioModel);
         }
 
-        private bool UsuarioModelExists(string id)
-        {
-            return _usuarioServices.UsuarioModelExists(id);
-        }
     }
 }

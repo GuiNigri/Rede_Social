@@ -1,0 +1,56 @@
+﻿@model RedeSocial.Apresentacao.Models.Usuarios.PerfilViewModel
+@using RedeSocial.Apresentacao.Controllers;
+
+<div class="container-fluid gedf-wrapper">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="h5"></div>
+                    <div class="h4"><img class="rounded-circle" src="@Model.FotoPerfil" width="45"/> @Model.NomePerfil</div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        @if (Model.StatusAmizade == 0)
+                        {
+                            <form asp-controller="Amigos" asp-action="Create" asp-route-user="@Model.IdentityUserPerfil" method="post">
+                                <button class="btn btn-primary">Solicitar Amizade <i class="fa fa-user-plus"></i></button>
+                            </form>
+
+                        }
+                        else if (Model.StatusAmizade == 1)
+                        {
+                            <button class="btn btn-warning" disabled>Amizade Solicitada</button>
+                        }
+                        else if (Model.StatusAmizade == 2)
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button class="btn btn-success" disabled>Amigos <i class="fa fa-check-circle"></i></button>
+                                </div>
+                                <div class="col-md-8">
+                                    <form asp-controller="Amigos" asp-action="Delete" asp-route-id="@Model.IdAmizade" method="post">
+                                        <button class="btn btn-danger">Desfazer Amizade <i class="fa fa-user-times"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                                </li>
+                    <li class="list-group-item">
+                        <div class="h6 text-muted">Amigos</div>
+                        <div class="h5">@Model.AmigosPerfilCount</div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 gedf-main">
+            <partial name="_PostsPartial" />
+
+            <!-- Post /////-->
+            <!-- Post /////-->
+        </div>
+        <partial name="_ListaAmigosPartial" />
+    </div>
+</div>
+

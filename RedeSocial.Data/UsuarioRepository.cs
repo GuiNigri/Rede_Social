@@ -9,50 +9,36 @@ using RedeSocial.Model.Interfaces.Repositories;
 
 namespace RedeSocial.Data
 {
-    public class UsuarioRepository:IUsuarioRepository
+    public class UsuarioRepository: BaseRepository<UsuarioModel>, IUsuarioRepository
     {
         private readonly RedeSocialContext _context;
 
-        public UsuarioRepository(RedeSocialContext context)
+        public UsuarioRepository(RedeSocialContext context):base(context)
         {
             _context = context;
         }
-        public async Task CreateAsync(UsuarioModel usuarioModel)
+
+        public override async Task CreateAsync(UsuarioModel usuarioModel)
         {
             await _context.UsuarioModel.AddAsync(usuarioModel);
             await _context.SaveChangesAsync();
         }
-
-        public async Task UpdateAsync(UsuarioModel usuarioModel)
+        public async Task DeleteAsync(string id)
         {
-            _context.Entry(usuarioModel).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(UsuarioModel usuarioModel)
-        {
+            var usuarioModel = await _context.UsuarioModel.FirstOrDefaultAsync(x => x.IdentityUser == id);
             _context.UsuarioModel.Remove(usuarioModel);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<UsuarioModel>> GetAllAsync()
+        public async Task<IEnumerable<UsuarioModel>> GetFiltroAsync(string termoInputado)
         {
-            return await _context.UsuarioModel.ToListAsync();
+            return await _context.UsuarioModel.Where(x => x.Nome.Contains(termoInputado) || x.Sobrenome.Contains(termoInputado)).ToListAsync();
         }
 
-        public async Task<UsuarioModel> GetByIdAsync(string Id)
-        {
-            return await _context.UsuarioModel.FindAsync(Id); ;
-        }
 
-        public bool UsuarioModelExists(string id)
+        public async Task<UsuarioModel> GetByIdAsync(string id)
         {
-            return _context.UsuarioModel.Any(e => e.IdentityUser == id);
-        }
-
-        public async Task<bool> GetByCpfAsync(long CPF)
-        {
-            return await _context.UsuarioModel.AnyAsync(x => x.Cpf == CPF);
+            return await _context.UsuarioModel.FirstOrDefaultAsync(x => x.IdentityUser == id);
         }
     }
 }

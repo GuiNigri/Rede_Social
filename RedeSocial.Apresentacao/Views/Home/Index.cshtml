@@ -1,8 +1,103 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model RedeSocial.Apresentacao.Models.Home.HomeViewModel
+@using RedeSocial.Apresentacao.Controllers;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid gedf-wrapper">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="h5"></div>
+                    <div class="h4 text-muted">@Model.NomePerfil</div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="h6 text-muted">Amigos</div>
+                        <div class="h5">@Model.Amigos.Count()</div>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="h5"></div>
+                    <div class="h6 text-muted">Solicitações de amizade</div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var solicitacao in Model.SolicitacoesPendentes)
+                    {
+        <li class="list-group-item">
+            <div class="row">
+                <div class="h6 text-muted col-md-12">
+                    <img class="rounded-circle" src="@solicitacao.Foto" width="45" />
+                    <a class="text-dark" asp-controller="Usuario" asp-action="Perfil" asp-route-userPerfil="@solicitacao.Perfil"> @solicitacao.NomeCompleto</a>
+                </div>
+                <div class="col-md-12 pull-right">
+                    <form asp-controller="Amigos" asp-action="Update" asp-route-id="@solicitacao.Id" method="post">
+                        <button class="btn btn-success pull-right">Aceitar </button>
+                    </form>
+                    <form asp-controller="Amigos" asp-action="Delete" asp-route-id="@solicitacao.Id" method="post">
+                        <button class="btn btn-danger pull-right">Recusar </button>
+                    </form>
+                </div>
+                <div class="col-md-6 pull-right">
+
+                </div>
+            </div>
+        </li>}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 gedf-main">
+
+            <!--- \\\\\\\Post-->
+            <div class="card gedf-card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">
+                                Postar
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" asp-controller="Post" enctype="multipart/form-data">
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                                <div class="form-group">
+                                    <label class="sr-only" for="message">postar</label>
+                                    <textarea class="form-control" id="message" name="message" rows="3" required placeholder="Oque Voce está pensando?"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-input" id="customFile" name="customFile" placeholder="Upload Imagem">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="btn-toolbar justify-content-between">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">Postar</button>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="custom-select" name="Privacidade" required>
+                                        <option value=0>Publico</option>
+                                        <option value=1>Amigos</option>
+                                        <option value=2>Privado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Post /////-->
+            <partial name="_PostsPartial" />
+            <!--- \\\\\\\Post-->
+        </div>
+
+        <partial name="_ListaAmigosPartial" />
+    </div>
 </div>
+

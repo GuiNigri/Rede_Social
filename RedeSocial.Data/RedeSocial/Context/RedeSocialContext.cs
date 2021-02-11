@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RedeSocial.Model.Entity;
 
 namespace RedeSocial.Data.RedeSocial.Context
 {
@@ -9,6 +10,10 @@ namespace RedeSocial.Data.RedeSocial.Context
         {
         }
 
-        public DbSet<global::RedeSocial.Model.Entity.UsuarioModel> UsuarioModel { get; set; }
+        public DbSet<UsuarioModel> UsuarioModel { get; set; }
+        public DbSet<PostModel> PostModel { get; set; }
+        public DbSet<AmigosModel> AmigosModel { get; set; }
+        public DbSet<CommentPostModel> CommentPostModel { get; set; }
+        public DbSet<LikePostModel> LikesPostModel { get; set; }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using RedeSocial.Apresentacao.Controllers;
+using RedeSocial.Model.Interfaces.Services;
 
 namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
 {
@@ -14,17 +15,17 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
-        private readonly UsuarioController _usuarioController;
+        private readonly IUsuarioServices _usuarioServices;
 
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger, UsuarioController usuarioController)
+            ILogger<DeletePersonalDataModel> logger, IUsuarioServices usuarioServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _usuarioController = usuarioController;
+            _usuarioServices = usuarioServices;
         }
 
         [BindProperty]
@@ -69,15 +70,20 @@ namespace RedeSocial.Apresentacao.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            var userId = await _userManager.GetUserIdAsync(user);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var result = await _userManager.DeleteAsync(user);
 
-            await _usuarioController.DeleteConfirmed(user.Id);
-
-            var userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
             {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
+                throw new InvalidOperationException(
+                    $"Unexpected error occurred deleting user with ID '{userId}'.");
             }
+
+            await _usuarioServices.DeleteAsync(user.Id);
+
+            scope.Complete();
 
             await _signInManager.SignOutAsync();
 

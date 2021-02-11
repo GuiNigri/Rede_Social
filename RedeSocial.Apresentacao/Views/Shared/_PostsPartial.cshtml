@@ -1,0 +1,124 @@
+﻿@foreach (var post in Model.PostList)
+{
+    <div class="card gedf-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="mr-2">
+                        <img class="rounded-circle" width="45" src="@post.FotoPerfil" alt="">
+                    </div>
+                    <div class="ml-2">
+                        <div class="h5 m-0"></div>
+                        <div class="h7 text-muted">
+                            <a class="text-dark" asp-controller="Usuario" asp-action="Perfil" asp-route-userPerfil="@post.IdentityUser">@post.NomeCompleto</a>
+                        </div>
+                    </div>
+                </div>
+                @if (post.IdentityUser == Model.IdentityUserLogado)
+                {
+                    <div>
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                                <div class="h6 dropdown-header">Ações</div>
+                                <a class="dropdown-item" id="register" asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id">Excluir</a>
+
+                            </div>
+                        </div>
+                    </div>}
+            </div>
+        </div>
+        <div class="card-body" style="border-bottom:1px solid rgba(0,0,0,.125);">
+            <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> @post.TempoDaPostagem @post.FormatacaoTempo atrás</div>
+            <p class="card-text">
+                @post.Texto
+            </p>
+        </div>
+        @if (post.UriImage != null)
+        {
+            <div class="card-body">
+                <img src="@post.UriImage" width="100%" />
+            </div>}
+
+    <div class="card-footer" style="border-bottom: 1px solid rgba(0, 0, 0, .125);">
+        @{
+
+            if ((post.StatusLike))
+            {
+                <a style="color: crimson" asp-controller="Post" asp-action="Likes" asp-route-idPost="@post.Id" class="card-link"><i class="fa fa-gittip"></i> Like</a>
+            }
+            else
+            {
+                <a asp-controller="Post" asp-action="Likes" asp-route-idPost="@post.Id" class="card-link"><i class="fa fa-gittip"></i> Like</a>
+            }
+            
+        }
+
+        <a href="#!" class="card-link" onclick="EscondeElemento('caption @post.Id')"><i class="fa fa-comment"></i> Comentario</a>
+        <div class="pull-right">
+            <a style="color: crimson;" class="card-link"><i class="fa fa-gittip"></i> @post.QuantLikes</a>
+        </div>
+    </div>
+        <div id="caption @post.Id" style="display: none;">
+            @foreach (var comentario in post.CommentList)
+            {
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between">
+                            <div class="mr-2">
+                                <img class="rounded-circle" width="30" src="@comentario.FotoPerfil" alt="">
+                            </div>
+                            <div class="ml-2">
+                                <div class="h7 text-muted">
+                                    <a class="text-dark" asp-controller="Usuario" asp-action="Perfil" asp-route-userPerfil="@comentario.IdentityUser">@comentario.Nome  </a>
+                                    <p><i class="fa fa-clock-o"></i> @comentario.TempoDoComentario @comentario.FormatacaoTempo atrás</p>
+                                    <div class="h6 m-0">
+                                        <p>@comentario.Comment</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        @if (comentario.IdentityUser == Model.IdentityUserLogado)
+                        {
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                                        <div class="h6 dropdown-header">Ações</div>
+                                        <a class="dropdown-item" asp-controller="Post" asp-action="DeleteComment" asp-route-id="@comentario.Id">Excluir</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="card-footer">
+                <form asp-action="CreateComment" asp-controller="Post" method="post" class="custom-control-inline col-md-12">
+                    <input hidden name="idPost" id="idPost" value="@post.Id" />
+                    <textarea class="form-control" id="comment" name="comment" rows="1" required placeholder="Comentarios"></textarea>
+                    <button type="submit" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-arrow-right"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+<!-- Post /////-->
+<!-- Post /////-->
+<script language="javascript"> 
+    function EscondeElemento(id){
+        var elemento = document.getElementById(id); 
+        if(elemento.style.display === 'none') {
+            elemento.style.display = 'block'; 
+        } else{
+            elemento.style.display = 'none'; 
+        }
+    }    
+</script>
